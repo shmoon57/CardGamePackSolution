@@ -14,6 +14,7 @@ protected:
 
 public:
 	void showUserInfo();
+
 	string getID();
 	string getPassword();
 	string getNickname();
@@ -24,3 +25,12 @@ public:
 	void setNickname();
 	void setGamePoint();
 };
+
+class UserDataManager:public User
+{
+public:
+	void writeUser();
+	void openUser();
+	void signUp();
+	string login();
+}
