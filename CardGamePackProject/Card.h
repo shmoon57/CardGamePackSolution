@@ -13,6 +13,7 @@ public:
 	}
 
 	void suffleCards();
+	void showMyCard();
 
 private:
 	vector<string> m_cardVector;
