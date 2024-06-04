@@ -20,7 +20,7 @@ public:
 protected:
 	int m_gameType; // 1 : µµµÏÀâ±â, 2 : È¦´ý
 	int m_gamePrice;
-	vector <int> m_cardVector;
+	vector <string> m_cardVector;
 };
 
 class Holdem : public GameManager
@@ -42,4 +42,7 @@ public:
 	string selectWinner() override;
 	void dealCard() override;
 	void shuffleCard() override;
+
+private:
+	int m_zeroCnt;
 };
