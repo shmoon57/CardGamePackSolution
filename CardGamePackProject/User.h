@@ -1,6 +1,9 @@
 #pragma once
 
+#include <iostream>
+#include <fstream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -26,11 +29,11 @@ public:
 	void setGamePoint();
 };
 
-class UserDataManager:public User
+class UserDataManager :public User
 {
 public:
-	void writeUser();
+	void writeUser(vector<string> userInfo);
 	void openUser();
 	void signUp();
-	string login();
-}
+	vector<string> login();
+};
