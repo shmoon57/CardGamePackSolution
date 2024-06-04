@@ -14,8 +14,18 @@ void Card::suffleCards()
 	}
 }
 
+void Card::showMyCard()
+{
+	for (string card : m_cardVector)
+	{
+		cout << card << " ";
+	}
+	cout << endl;
+}
+
 vector <string> Card::makeDeck(int type)
 {
+	// "sA", "s2", "s3", "s4", ... , "sQ", "sK"
 	// Ä«µåÀÇ ¼ýÀÚ
 	vector<string> ranks = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
 	// Ä«µåÀÇ ½´Æ®
@@ -35,7 +45,7 @@ vector <string> Card::makeDeck(int type)
 		break;
 	}
 
-	case 2: //ÅØ»ç½ºÈ¦´ý
+	case 2: //È¦´ý
 	{
 		// Ä«µå µ¦ »ý¼º
 		for (const auto& suit : suits) {
