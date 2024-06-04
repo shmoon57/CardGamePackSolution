@@ -1,6 +1,9 @@
 #pragma once
 
+#include <iostream>
+#include <fstream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -14,6 +17,7 @@ protected:
 
 public:
 	void showUserInfo();
+
 	string getID();
 	string getPassword();
 	string getNickname();
@@ -23,4 +27,13 @@ public:
 	void setPassword();
 	void setNickname();
 	void setGamePoint();
+};
+
+class UserDataManager :public User
+{
+public:
+	void writeUser(vector<string> userInfo);
+	void openUser();
+	void signUp();
+	vector<string> login();
 };
