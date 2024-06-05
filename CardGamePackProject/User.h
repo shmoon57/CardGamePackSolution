@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -32,7 +33,7 @@ public:
 class UserDataManager :public User
 {
 public:
-	void writeUser(vector<string> userInfo);
+	void writeUser(vector<string> userInfo); //userInfo = [ID, password, nickname, point]
 	void openUser();
 	void signUp();
 	vector<string> login();
