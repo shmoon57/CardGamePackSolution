@@ -58,4 +58,5 @@ vector <string> Card::makeDeck(int type)
 	default:
 		break;
 	}
+	return m_cardVector;
 }
