@@ -15,6 +15,7 @@ public:
 
 	void suffleCards();
 	void showMyCard();
+	vector<string> getCardVector();
 
 private:
 	vector<string> m_cardVector;
