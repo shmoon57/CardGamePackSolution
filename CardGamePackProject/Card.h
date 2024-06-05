@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -13,6 +14,7 @@ public:
 	}
 
 	void suffleCards();
+	void showMyCard();
 
 private:
 	vector<string> m_cardVector;
