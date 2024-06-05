@@ -8,24 +8,22 @@ void User::showUserInfo()
 
 string User::getID()
 {
-
-
+	return "0";
 }
 
 string User::getPassword()
 {
-
-
+	return "0";
 }
 
 string User::getNickname()
 {
-
+	return "0";
 }
 
 int User::getGamePoint()
 {
-
+	return 0;
 }
 
 void User::setID()
@@ -83,11 +81,11 @@ void UserDataManager::writeUser(vector<string> userInfo)
 	//기존 회원이라면 회원의 ID 저장 & 변경된 회원 정보(point)도 저장
 	for (int i = 0; i < userNum; i++)
 	{
-		if (data[userNum][0] == userInfo[0])
+		if (data[i][0] == userInfo[0])
 		{
 			option = 2;
-			targetID = data[userNum][0];
-			data[userNum][3] = userInfo[3];
+			targetID = data[i][0];
+			data[i][3] = userInfo[3];
 		}
 	}
 
@@ -97,6 +95,7 @@ void UserDataManager::writeUser(vector<string> userInfo)
 	{
 		file.clear();
 		file.seekp(0, ios::end);
+		file << "\n";
 		for (int i = 0; i < 4; i++)
 		{
 			file << userInfo[i] << " " ; // 회원정보 추가
@@ -104,7 +103,8 @@ void UserDataManager::writeUser(vector<string> userInfo)
 	}
 	else if (option == 2)
 	{
-		file.clear();
+		file.clear(); 
+		file.seekp(0, ios::beg);
 		for (int i = 0; i < userNum; i++)
 		{
 			for (int j = 0; j < 4; j++)
@@ -127,24 +127,19 @@ void UserDataManager::signUp() //회원가입
 {
 	vector<string> user;
 	string ID, password, checkingpassword, nickname;
-	ifstream read_file("User.txt");
+	//ifstream read_file("User.txt");
 
 	cout << "---------------------회원가입---------------------\n";
 
-	if (read_file.is_open() == false)
-	{
-		//파일 열리지 않을 때 어떡하나
-	}
-
 	while (true)
 	{
-		cout << "아이디			: \n";
+		cout << "아이디			: ";
 		cin >> ID;
-		cout << "비밀번호			: \n";
+		cout << "비밀번호			: ";
 		cin >> password;
-		cout << "비밀번호 확인	: \n";
+		cout << "비밀번호 확인	: ";
 		cin >> checkingpassword;
-		cout << "닉네임			: \n";
+		cout << "닉네임			: ";
 		cin >> nickname;
 		
 		if (password != checkingpassword)
@@ -163,7 +158,7 @@ void UserDataManager::signUp() //회원가입
 	writeUser(user);
 
 	cout << "회원가입이 완료되었습니다. \n";
-	read_file.close();
+	//read_file.close();
 }
 
 
