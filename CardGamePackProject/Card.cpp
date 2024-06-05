@@ -28,7 +28,7 @@ vector<string> Card::getCardVector()
 	return m_cardVector;
 }
 
-vector <string> Card::makeDeck(int type)
+void Card::makeDeck(int type)
 {
 	// "sA", "s2", "s3", "s4", ... , "sQ", "sK"
 	// 카드의 숫자
@@ -63,5 +63,4 @@ vector <string> Card::makeDeck(int type)
 	default:
 		break;
 	}
-	return m_cardVector;
 }
