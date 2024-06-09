@@ -34,7 +34,7 @@ class UserDataManager :public User
 {
 public:
 	void writeUser(vector<string> userInfo); //userInfo = [ID, password, nickname, point]
-	void openUser();
+	vector<vector<string>> openUser();
 	void signUp();
 	vector<string> login();
 };

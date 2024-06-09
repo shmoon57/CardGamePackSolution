@@ -50,27 +50,7 @@ void UserDataManager::writeUser(vector<string> userInfo)
 //회원정보 저장
 //userInfo = {ID, password, nickname, point}
 {
-	fstream file("User.txt", ios::in | ios::out);
-	if (!file.is_open()) {
-
-	}
-	vector<vector<string>> data;
-	string line;
-
-	//파일 읽어오기
-	while (getline(file, line)) {
-		istringstream iss(line);
-		string word;
-		vector<std::string> row;
-
-		// 줄에서 단어를 분리하여 벡터에 저장
-		while (iss >> word) {
-			row.push_back(word);
-		}
-
-		// 한 줄의 데이터를 이중 벡터에 추가
-		data.push_back(row);
-	}
+	vector<vector<string>> data = openUser();
 
 	int userNum = data.size();
 	int option = 1; // 1: 회원가입 2: 기존회원
@@ -89,38 +69,56 @@ void UserDataManager::writeUser(vector<string> userInfo)
 		}
 	}
 
-	//option 1 : txt파일 마지막 줄에 회원정보 추가
-	//option 2 : txt파일에 기존 회원 정보 수정
-	if (option == 1)
+	//회원가입인 경우 data에 새로운 회원 추가
+	data.push_back(userInfo);
+
+	//쓰기 파일 실행
+
+	ofstream file("User.txt");
+
+	//파일에 회원 정보 저장
+	for (int i = 0; i < userNum; i++)
 	{
-		file.clear();
-		file.seekp(0, ios::end);
+		for (int j = 0; j < 4; j++)
+		{
+			file << data[i][j] << " ";
+		}
 		file << "\n";
-		for (int i = 0; i < 4; i++)
-		{
-			file << userInfo[i] << " " ; // 회원정보 추가
-		}
-	}
-	else if (option == 2)
-	{
-		file.clear(); 
-		file.seekp(0, ios::beg);
-		for (int i = 0; i < userNum; i++)
-		{
-			for (int j = 0; j < 4; j++)
-			{
-				file << data[i][j] << " ";
-			}
-			file << "\n";
-		}
 	}
 
 	file.close();
 }
 
-void UserDataManager::openUser()
+vector<vector<string>> UserDataManager::openUser()
 {
+	//파일이 열렸는지 확인
+	ifstream file("User.txt");
+	if (!file.is_open()) {
 
+	}
+
+	//회원의 정보를 저장할 벡터
+	vector<vector<string>> data;
+	string line;
+
+	//파일 읽어오기
+	while (getline(file, line)) {
+		istringstream iss(line);
+		string word;
+		vector<std::string> row;
+
+		// 줄에서 단어를 분리하여 벡터에 저장
+		while (iss >> word) {
+			row.push_back(word);
+		}
+
+		// 한 줄의 데이터를 이중 벡터에 추가
+		data.push_back(row);
+	}
+	
+	file.close();
+
+	return data;
 }
 
 void UserDataManager::signUp() //회원가입
@@ -164,7 +162,6 @@ void UserDataManager::signUp() //회원가입
 
 vector<string> UserDataManager::login() //로그인
 {
-	vector<string> user;
 	ifstream read_file("User.txt");
 
 	if (read_file.is_open() == false)
@@ -174,8 +171,14 @@ vector<string> UserDataManager::login() //로그인
 	
 	while (true)
 	{
+		//로그인 할 유저의 정보
+		vector<string> user;
+		string ID, password;
 		cout << "아이디			: \n";
+		cin >> ID;
 		cout << "비밀번호			: \n";
+		cin >> password;
+
 	}
 
 }
