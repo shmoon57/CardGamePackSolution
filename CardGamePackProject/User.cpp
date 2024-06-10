@@ -70,11 +70,7 @@ void UserDataManager::writeUser(vector<string> userInfo)
 	}
 
 	//회원가입인 경우 data에 새로운 회원 추가
-	if (option == 1)
-	{
-		data.push_back(userInfo);
-		userNum++;
-	}
+	data.push_back(userInfo);
 
 	//쓰기 파일 실행
 
@@ -129,6 +125,7 @@ void UserDataManager::signUp() //회원가입
 {
 	vector<string> user;
 	string ID, password, checkingpassword, nickname;
+	//ifstream read_file("User.txt");
 
 	cout << "---------------------회원가입---------------------\n";
 
@@ -162,57 +159,27 @@ void UserDataManager::signUp() //회원가입
 	//read_file.close();
 }
 
-vector<string> UserDataManager::login() //로그인 return : Nickname, point
+
+vector<string> UserDataManager::login() //로그인
 {
-	vector<vector<string>> data = openUser();
-	bool isUser = false;
-	int userNum = data.size();
-	int userIndex = -1; // 로그인하는 user의 index
-	vector<string> user; //로그인 할 유저의 정보
-	string ID, password;
+	ifstream read_file("User.txt");
 
-	//ID가 존재하는 지 확인
-	while (isUser == false)
+	if (read_file.is_open() == false)
 	{
-		cout << "아이디			: \n";
-		cin >> ID;
-		// data를 살피며 id가 존재하는지 확인
-		for (int i = 0; i < userNum; i++)
-		{
-			if (ID == data[i][0])
-			{
-				isUser = true;
-				userIndex = i;
-			}
-		}
-
-		if (isUser == false)
-		{
-			cout << "존재하지 않는 아이디입니다. \n";
-			cout << "다시 입력해주세요. \n";
-		}
+		//파일 열리지 않을 때 어떡하나
 	}
-
+	
 	while (true)
 	{
+		//로그인 할 유저의 정보
+		vector<string> user;
+		string ID, password;
+		cout << "아이디			: \n";
+		cin >> ID;
 		cout << "비밀번호			: \n";
 		cin >> password;
-		
-		if (password == data[userIndex][1])
-		{
-			cout << "로그인에 성공했습니다. \n";
-			break;
-		}
-		else
-		{
-			cout << "다시 입력해주세요 : \n";
-		}
+
 	}
 
-	// user의 Nickname, Point 정보 저장
-	user.push_back(data[userIndex][2]);
-	user.push_back(data[userIndex][3]);
-
-	return user;
 }
 
