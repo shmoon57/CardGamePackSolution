@@ -1,0 +1,14 @@
+diff a/CardGamePackProject/User.cpp b/CardGamePackProject/User.cpp	(rejected hunks)
+@@ -70,11 +70,7 @@
+ 	}
+ 
+ 	//ȸ�������� ��� data�� ���ο� ȸ�� �߰�
+-	if (option == 1)
+-	{
+-		data.push_back(userInfo);
+-		userNum++;
+-	}
++	data.push_back(userInfo);
+ 
+ 	//���� ���� ����
+ 
