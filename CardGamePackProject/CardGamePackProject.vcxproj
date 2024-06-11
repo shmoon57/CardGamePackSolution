@@ -127,15 +127,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Card.cpp" />
+    <ClCompile Include="CardDeck.cpp" />
     <ClCompile Include="Design.cpp" />
+    <ClCompile Include="Design.h" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Card.h" />
-    <ClInclude Include="Design.h" />
+    <ClInclude Include="CardDeck.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="User.h" />
   </ItemGroup>

@@ -9,7 +9,7 @@
 using namespace std;
 
 
-class UserDataManager 
+class UserDataManager
 {
 public:
 	void writeUser(vector<string> userInfo); //userInfo = [ID, password, nickname, point]
@@ -17,7 +17,7 @@ public:
 	void signUp();
 };
 
-//·Î±×ÀÎÀ» ÇÏ¸é¼­ »ı¼ºµÇ´Â °ÍÀÌ ÁÁÀ» °Í °°À½
+//ë¡œê·¸ì¸ì„ í•˜ë©´ì„œ ìƒì„±ë˜ëŠ” ê²ƒì´ ì¢‹ì„ ê²ƒ ê°™ìŒ
 class User : public UserDataManager
 {
 

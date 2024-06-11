@@ -24,7 +24,13 @@
     <ClCompile Include="GameManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Card.cpp">
+    <ClCompile Include="CardDeck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Design.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Design.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Design.cpp">
@@ -38,7 +44,7 @@
     <ClInclude Include="User.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Card.h">
+    <ClInclude Include="CardDeck.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Design.h">

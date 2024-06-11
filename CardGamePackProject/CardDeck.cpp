@@ -1,34 +1,25 @@
 #include <ctime>
 
-#include "Card.h"
+#include "CardDeck.h"
 
-void Card::suffleCards()
+void CardDeck::suffleCards()
 {
 	// 랜덤 시드 초기화
-	std::srand(std::time(0));
+	srand(std::time(0));
 
 	// 피셔-예이츠 셔플 알고리즘
 	for (size_t i = m_cardVector.size() - 1; i > 0; --i) {
 		size_t j = std::rand() % (i + 1);
-		std::swap(m_cardVector[i], m_cardVector[j]);
+		swap(m_cardVector[i], m_cardVector[j]);
 	}
 }
 
-void Card::showMyCard()
-{
-	for (string card : m_cardVector)
-	{
-		cout << card << " ";
-	}
-	cout << endl;
-}
-
-vector<string> Card::getCardVector()
+vector<string> CardDeck::getCardVector()
 {
 	return m_cardVector;
 }
 
-vector <string> Card::makeDeck(int type)
+void CardDeck::makeDeck(int type)
 {
 	// "sA", "s2", "s3", "s4", ... , "sQ", "sK"
 	// 카드의 숫자
@@ -63,5 +54,4 @@ vector <string> Card::makeDeck(int type)
 	default:
 		break;
 	}
-	return m_cardVector;
 }

@@ -1,6 +1,5 @@
 #include "User.h"
 
-
 void UserDataManager::writeUser(vector<string> userInfo)
 //회원정보 저장
 //userInfo = {ID, password, nickname, point}
@@ -117,13 +116,12 @@ void UserDataManager::signUp() //회원가입
 	//read_file.close();
 }
 
-vector<string> UserDataManager::login() //로그인 return : Nickname, point
+void User::login() //로그인 return : Nickname, point
 {
 	vector<vector<string>> data = openUser();
 	bool isUser = false;
 	int userNum = data.size();
 	int userIndex = -1; // 로그인하는 user의 index
-	vector<string> user; //로그인 할 유저의 정보
 	string ID, password;
 
 	//ID가 존재하는 지 확인
@@ -148,6 +146,7 @@ vector<string> UserDataManager::login() //로그인 return : Nickname, point
 		}
 	}
 
+	//비밀번호 확인
 	while (true)
 	{
 		cout << "비밀번호			: \n";
@@ -164,11 +163,11 @@ vector<string> UserDataManager::login() //로그인 return : Nickname, point
 		}
 	}
 
-	// user의 Nickname, Point 정보 저장
-	user.push_back(data[userIndex][2]);
-	user.push_back(data[userIndex][3]);
-
-	return user;
+	//User에 정보 저장
+	setID(data[userIndex][0]);
+	setPassword(data[userIndex][1]);
+	setNickname(data[userIndex][2]);
+	setGamePoint(data[userIndex][3]);
 }
 
 string User::getID()
