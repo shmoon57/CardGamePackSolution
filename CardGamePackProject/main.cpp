@@ -6,8 +6,14 @@
 using std::cout;
 using std::endl;
 
+#include "Card.h"
+#include "User.h"
+#include "GameManager.h"
+
+
 int main()
 {
+<<<<<<< HEAD
 	// µµµÏÀâ±â °´Ã¼ »ý¼º
 	OldMaid game1;
 
@@ -92,3 +98,22 @@ void clearScreen()
 			break;
 		}
 	}*/
+=======
+	User user1;
+	User user2;
+	User user3;
+
+	int gameOption;
+
+	cout << "CARD GAME" << endl;
+	cout << "1, 2, 3" << endl;
+	cin >> gameOption;
+
+	cout << user1.getGamePoint();
+
+	Holdem holdem;
+	holdem.dealCard();
+
+
+}
+>>>>>>> 8c6d4269cc11034bd71b4b2c76a3ecd9c11702c3
