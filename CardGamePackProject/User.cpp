@@ -170,12 +170,6 @@ void User::login() //·Î±×ÀÎ return : Nickname, point
 	setGamePoint(data[userIndex][3]);
 }
 
-void User::showUserInfo()
-{
-
-
-}
-
 string User::getID()
 {
 	return this->m_ID;

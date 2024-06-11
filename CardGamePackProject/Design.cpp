@@ -7,19 +7,19 @@ void Design::cardDesign(string card, int x, int y)
 
     if (shape == "s")
     {
-        shape = "¢¼";
+        shape = "â™ ";
     }
     else if (shape == "d")
     {
-        shape = "¡ß";
+        shape = "â—†";
     }
     else if (shape == "h")
     {
-        shape = "¢¾";
+        shape = "â™¥";
     }
     else if (shape == "c")
     {
-        shape = "¢À";
+        shape = "â™£";
     }
 
     drawSquare(x, y, 10, 7);
@@ -40,20 +40,20 @@ void Design::gotoxy(int x, int y)
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Cur);
 }
 
-// ¼öÆò¼±À» ±×¸®´Â ÇÔ¼ö
+// ìˆ˜í‰ì„ ì„ ê·¸ë¦¬ëŠ” í•¨ìˆ˜
 void Design::drawHorizontalLine(int x, int y, int length) {
     gotoxy(x, y);
     for (int i = 0; i < length; ++i) {
-        std::cout << "¦¡";
+        std::cout << "â”€";
     }
     std::cout << std::endl;
 }
 
-// ¼öÁ÷¼±À» ±×¸®´Â ÇÔ¼ö
+// ìˆ˜ì§ì„ ì„ ê·¸ë¦¬ëŠ” í•¨ìˆ˜
 void Design::drawVerticalLine(int x, int y, int length) {
     for (int i = 0; i < length; ++i) {
         gotoxy(x, y + i);
-        std::cout << "¦¢";
+        std::cout << "â”‚";
     }
     std::cout << std::endl;
 }
@@ -66,13 +66,13 @@ void Design::drawSquare(int x, int y, int width, int height)
     drawHorizontalLine(x, y + height, width);
 
     gotoxy(x, y);
-    cout << "¦£";
+    cout << "â”Œ";
     gotoxy(x + width, y);
-    cout << "¦¤";
+    cout << "â”";
     gotoxy(x, y + height);
-    cout << "¦¦";
+    cout << "â””";
     gotoxy(x + width, y + height);
-    cout << "¦¥";
+    cout << "â”˜";
 
 }
 
@@ -105,28 +105,28 @@ void Design::printMyCard(vector<string> myCard)
     cout << "my Card";
 
     gotoxy(50, 4);
-    cout << "¢¼ | " << 5;
+    cout << "â™  | " << 5;
     for (int i = 0; i < spade.size(); i++)
     {
         cout << spade[i] << " ";
     }
 
     gotoxy(50, 5);
-    cout << "¡ß | " << 5;
+    cout << "â—† | " << 5;
     for (int i = 0; i < diamond.size(); i++)
     {
         cout << diamond[i] << " ";
     }
 
     gotoxy(50, 6);
-    cout << "¢¾ | " << 5;
+    cout << "â™¥ | " << 5;
     for (int i = 0; i < heart.size(); i++)
     {
         cout << heart[i] << " ";
     }
 
     gotoxy(50, 8);
-    cout << "¢À | " << 5;
+    cout << "â™£ | " << 5;
     for (int i = 0; i < clover.size(); i++)
     {
         cout << clover[i] << " ";
@@ -137,7 +137,7 @@ void Design::printMyCard(vector<string> myCard)
 
 void HoldemDesign::printCommunityCard(vector<string> communityCard, int turnNum)
 {
-    //drawSquare(5, 10, 10, 7); // (x, y, °¡·Î, ¼¼·Î)
+    //drawSquare(5, 10, 10, 7); // (x, y, ê°€ë¡œ, ì„¸ë¡œ)
     //drawSquare(25, 10, 10, 7);
     //drawSquare(45, 10, 10, 7);
     //drawSquare(65, 10, 10, 7);
