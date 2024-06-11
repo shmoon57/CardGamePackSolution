@@ -1,13 +1,7 @@
 #include <ctime>
-<<<<<<< HEAD:CardGamePackProject/Card.cpp
-#include "Card.h"
-
-
-=======
-
 #include "CardDeck.h"
 
->>>>>>> 8c6d4269cc11034bd71b4b2c76a3ecd9c11702c3:CardGamePackProject/CardDeck.cpp
+
 void CardDeck::suffleCards()
 {
 	// ·£´ý ½Ãµå ÃÊ±âÈ­
@@ -24,10 +18,7 @@ vector<string> CardDeck::getCardVector()
 {
 	return m_cardVector;
 }
-<<<<<<< HEAD:CardGamePackProject/Card.cpp
-=======
 
->>>>>>> 8c6d4269cc11034bd71b4b2c76a3ecd9c11702c3:CardGamePackProject/CardDeck.cpp
 void CardDeck::makeDeck(int type)
 {
 	// "sA", "s2", "s3", "s4", ... , "sQ", "sK"
@@ -48,10 +39,7 @@ void CardDeck::makeDeck(int type)
 		m_cardVector.push_back("JK");
 		break;
 	}
-<<<<<<< HEAD:CardGamePackProject/Card.cpp
-=======
 
->>>>>>> 8c6d4269cc11034bd71b4b2c76a3ecd9c11702c3:CardGamePackProject/CardDeck.cpp
 	case 2: //È¦´ý
 	{
 		// Ä«µå µ¦ »ý¼º

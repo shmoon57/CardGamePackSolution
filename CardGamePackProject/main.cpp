@@ -1,19 +1,13 @@
 #include "GameManager.h"
-#include "Card.h"
+#include "CardDeck.h"
 
-// 화면 초기화 함수
-//void clearScreen();
 using std::cout;
 using std::endl;
 
-#include "Card.h"
-#include "User.h"
-#include "GameManager.h"
-
+void clearScreen();
 
 int main()
 {
-<<<<<<< HEAD
 	// 도둑잡기 객체 생성
 	OldMaid game1;
 
@@ -58,18 +52,7 @@ int main()
 		cout << "도둑잡기 \n";
 		cout << game1.getGameRound() << "번째 턴입니다" << endl;
 
-		
-
-
-
-
 	}
-
-	
-
-
-
-	
 
 
 
@@ -77,13 +60,10 @@ int main()
 
 }
 
-
 void clearScreen()
 {
 	system("cls");
 }
-
-
 
 /*
 * 
@@ -98,22 +78,3 @@ void clearScreen()
 			break;
 		}
 	}*/
-=======
-	User user1;
-	User user2;
-	User user3;
-
-	int gameOption;
-
-	cout << "CARD GAME" << endl;
-	cout << "1, 2, 3" << endl;
-	cin >> gameOption;
-
-	cout << user1.getGamePoint();
-
-	Holdem holdem;
-	holdem.dealCard();
-
-
-}
->>>>>>> 8c6d4269cc11034bd71b4b2c76a3ecd9c11702c3

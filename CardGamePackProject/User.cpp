@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-// empty
-=======
 #include "User.h"
 
 void UserDataManager::writeUser(vector<string> userInfo)
@@ -218,4 +215,4 @@ void User::setGamePoint(string gainedPoint)
 {
 	this->m_gamePoint = to_string(stoi(m_gamePoint) + stoi(gainedPoint));
 }
->>>>>>> 8c6d4269cc11034bd71b4b2c76a3ecd9c11702c3
+
