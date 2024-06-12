@@ -25,7 +25,7 @@ protected:
 	string m_ID;
 	string m_password;
 	string m_nickname;
-	string m_gamePoint;
+	string m_gamePoint = "0";
 
 public:
 	void login();
