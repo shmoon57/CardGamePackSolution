@@ -135,6 +135,17 @@ void Design::printMyCard(vector<string> myCard)
     drawSquare(49, 1, 20, 7);
 }
 
+void Design::printMyInfo(vector<string> myInfo)
+{
+    drawSquare(50, 20, 20, 5);
+    gotoxy(52, 22);
+    cout << myInfo[2];
+    gotoxy(52, 23);
+    cout << myInfo[3];
+
+    gotoxy(100, 30);
+}
+
 void HoldemDesign::printCommunityCard(vector<string> communityCard, int turnNum)
 {
     //drawSquare(5, 10, 10, 7); // (x, y, 가로, 세로)

@@ -15,6 +15,7 @@ public:
 	void drawVerticalLine(int x, int y, int length);
 	void drawSquare(int x, int y, int width, int height);
 	void printMyCard(vector<string> myCard);
+	void printMyInfo(vector<string> myInfo);
 };
 
 class HoldemDesign :public Design
