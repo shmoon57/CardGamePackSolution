@@ -47,8 +47,5 @@
     <ClInclude Include="CardDeck.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Design.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

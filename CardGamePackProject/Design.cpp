@@ -1,25 +1,25 @@
 #include "Design.h"
 
-void Design::cardDesign(string card, int x, int y)
+void Design::cardDesign(string& card, int x, int y)
 {
     string shape = card.substr(0, 1);
     string num = card.substr(1, 1);
 
     if (shape == "s")
     {
-        shape = "â™ ";
+        shape = "¢¼";
     }
     else if (shape == "d")
     {
-        shape = "â—†";
+        shape = "¡ß";
     }
     else if (shape == "h")
     {
-        shape = "â™¥";
+        shape = "¢¾";
     }
     else if (shape == "c")
     {
-        shape = "â™£";
+        shape = "¢À";
     }
 
     drawSquare(x, y, 10, 7);
@@ -40,20 +40,20 @@ void Design::gotoxy(int x, int y)
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Cur);
 }
 
-// ìˆ˜í‰ì„ ì„ ê·¸ë¦¬ëŠ” í•¨ìˆ˜
+// ¼öÆò¼±À» ±×¸®´Â ÇÔ¼ö
 void Design::drawHorizontalLine(int x, int y, int length) {
     gotoxy(x, y);
     for (int i = 0; i < length; ++i) {
-        std::cout << "â”€";
+        std::cout << "¦¡";
     }
     std::cout << std::endl;
 }
 
-// ìˆ˜ì§ì„ ì„ ê·¸ë¦¬ëŠ” í•¨ìˆ˜
+// ¼öÁ÷¼±À» ±×¸®´Â ÇÔ¼ö
 void Design::drawVerticalLine(int x, int y, int length) {
     for (int i = 0; i < length; ++i) {
         gotoxy(x, y + i);
-        std::cout << "â”‚";
+        std::cout << "¦¢";
     }
     std::cout << std::endl;
 }
@@ -66,17 +66,17 @@ void Design::drawSquare(int x, int y, int width, int height)
     drawHorizontalLine(x, y + height, width);
 
     gotoxy(x, y);
-    cout << "â”Œ";
+    cout << "¦£";
     gotoxy(x + width, y);
-    cout << "â”";
+    cout << "¦¤";
     gotoxy(x, y + height);
-    cout << "â””";
+    cout << "¦¦";
     gotoxy(x + width, y + height);
-    cout << "â”˜";
+    cout << "¦¥";
 
 }
 
-void Design::printMyCard(vector<string> myCard)
+void Design::printMyCard(vector<string>& myCard)
 {
     vector<string> spade, diamond, heart, clover;
     int myCardSize = myCard.size();
@@ -101,61 +101,81 @@ void Design::printMyCard(vector<string> myCard)
             clover.push_back(num);
         }
     }
-    gotoxy(50, 3);
-    cout << "my Card";
+    gotoxy(50, 2);
+    cout << "------my Card-----";
 
-    gotoxy(50, 4);
-    cout << "â™  | " << 5;
+    gotoxy(50, 3);
+    cout << "| ¢¼ | ";
     for (int i = 0; i < spade.size(); i++)
     {
         cout << spade[i] << " ";
     }
 
-    gotoxy(50, 5);
-    cout << "â—† | " << 5;
+    gotoxy(50, 4);
+    cout << "| ¡ß | ";
     for (int i = 0; i < diamond.size(); i++)
     {
         cout << diamond[i] << " ";
     }
 
-    gotoxy(50, 6);
-    cout << "â™¥ | " << 5;
+    gotoxy(50, 5);
+    cout << "| ¢¾ | ";
     for (int i = 0; i < heart.size(); i++)
     {
         cout << heart[i] << " ";
     }
 
-    gotoxy(50, 8);
-    cout << "â™£ | " << 5;
+    gotoxy(50, 6);
+    cout << "| ¢À | ";
     for (int i = 0; i < clover.size(); i++)
     {
         cout << clover[i] << " ";
     }
-
-    drawSquare(49, 1, 20, 7);
 }
 
-void HoldemDesign::printCommunityCard(vector<string> communityCard, int turnNum)
+void Design::printMyInfo(vector<string>& myInfo)
 {
-    //drawSquare(5, 10, 10, 7); // (x, y, ê°€ë¡œ, ì„¸ë¡œ)
+    drawSquare(50, 20, 20, 5);
+    gotoxy(52, 22);
+    cout << myInfo[2];
+    gotoxy(52, 23);
+    cout << myInfo[3];
+
+    gotoxy(100, 30);
+}
+
+void HoldemDesign::printCommunityCard(vector<string>& communityCard, int turnNum)
+{
+    //drawSquare(5, 10, 10, 7); // (x, y, °¡·Î, ¼¼·Î)
     //drawSquare(25, 10, 10, 7);
     //drawSquare(45, 10, 10, 7);
     //drawSquare(65, 10, 10, 7);
     //drawSquare(85, 10, 10, 7);
 
-    for (int i = 0; i < turnNum + 2; i++)
+    if (turnNum == 0)
     {
-        cardDesign(communityCard[i], 20 - 15 * i, 10);
+        drawSquare(5, 10, 10, 8); // (x, y, °¡·Î, ¼¼·Î)
+        drawSquare(20, 10, 10, 8);
+        drawSquare(35, 10, 10, 8);
+        drawSquare(50, 10, 10, 8);
+        drawSquare(65, 10, 10, 8);
     }
-
-    if (turnNum == 1)
+    else 
     {
-        drawSquare(65, 10, 10, 7);
-        drawSquare(85, 10, 10, 7);
+        for (int i = 0; i < turnNum + 2; i++)
+        {
+            cardDesign(communityCard[i], 5 + 15 * i, 10);
+        }
+        if (turnNum == 1)
+        {
+            drawSquare(50, 10, 10, 8);
+            drawSquare(65, 10, 10, 8);
+        }
+        else if (turnNum == 2)
+        {
+            drawSquare(65, 10, 10, 8);
+        }
     }
-    else if (turnNum == 2)
-    {
-        drawSquare(85, 10, 10, 7);
-    }
+    
     gotoxy(100, 20);
 }
