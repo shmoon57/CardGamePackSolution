@@ -31,14 +31,20 @@ int main()
 		{
 			cout << "프로그램을 종료합니다.\n";
 			break;
-		}else
+		}
+		else
 		{
 			cout << "잘못된 입력입니다.\n";
 		}
 	}
+	
+	cout << user.getGamePoint() << endl;
 
+	Holdem holdem;
 
+	cout << "카드를 섞어 배분합니다." << endl;
+	holdem.dealCard();
 
-
-
+	cout << "홀덤을 시작합니다." << endl;
+	holdem.play();
 }

@@ -1,10 +1,234 @@
 #include <random>
 #include <numeric>
+#include <map>
+#include <set>
+#include <sstream>
 
 #include "GameManager.h"
 #include "Design.h"
 
 #define USERNUM 3
+
+struct Card {
+    char suit;  // 's', 'd', 'h', 'c'
+    int value;  // 2-10, 11 (J), 12 (Q), 13 (K), 14 (A)
+
+    Card(char s, int v) : suit(s), value(v) {}
+};
+
+std::map<char, int> value_map = {
+    {'2', 2}, {'3', 3}, {'4', 4}, {'5', 5}, {'6', 6}, {'7', 7}, {'8', 8}, {'9', 9}, {'T', 10}, {'J', 11}, {'Q', 12}, {'K', 13}, {'A', 14}
+};
+
+vector<Card> parseCards(const vector<string>& card_strs) {
+    vector<Card> cards;
+    for (const auto& card_str : card_strs) {
+        char suit = card_str[1];  // suit는 card_str[1]에 있음
+        int value = value_map[card_str[0]];  // value는 card_str[0]에 있음
+        cards.emplace_back(suit, value);
+    }
+    return cards;
+}
+
+// 정렬된 unique_values 벡터가 스트레이트인지 확인하는 함수
+bool isStraight(const std::vector<int>& unique_values, std::vector<int>& straight_cards) {
+    straight_cards.clear(); // 스트레이트 카드를 저장하기 위해 초기화
+
+    // unique_values를 오름차순으로 정렬
+    std::vector<int> sorted_values = unique_values;
+    std::sort(sorted_values.begin(), sorted_values.end());
+
+    int consecutive_count = 1; // 연속된 카드의 개수를 세는 변수
+    for (size_t i = 1; i < sorted_values.size(); ++i) {
+        // 현재 값과 이전 값이 1 차이가 나면 연속된 값이므로 consecutive_count 증가
+        if (sorted_values[i] - sorted_values[i - 1] == 1) {
+            consecutive_count++;
+        }
+        else {
+            consecutive_count = 1; // 연속이 끊겼으므로 다시 1로 초기화
+        }
+
+        // 연속된 카드가 5장이 되면 스트레이트이므로 해당 범위를 straight_cards에 저장
+        if (consecutive_count == 5) {
+            for (int j = i - 4; j <= i; ++j) {
+                straight_cards.push_back(sorted_values[j]);
+            }
+            return true; // 스트레이트가 확인되었으므로 true 반환
+        }
+    }
+
+    return false; // 스트레이트가 없으므로 false 반환
+}
+
+pair<string, vector<Card>> determineHand(const std::vector<Card>& all_cards) {
+    // Sort cards by value
+    std::vector<Card> cards = all_cards;
+    std::sort(cards.begin(), cards.end(), [](const Card& a, const Card& b) {
+        return a.value < b.value;
+        });
+
+    // Helper structures
+    std::map<int, int> value_count;
+    std::map<char, int> suit_count;
+    std::map<char, std::vector<int>> suit_values;
+
+    for (const auto& card : cards) {
+        value_count[card.value]++;
+        suit_count[card.suit]++;
+        suit_values[card.suit].push_back(card.value);
+    }
+
+    // Check for straight flush and royal flush
+    for (const auto& suit_values_pair : suit_values) {
+        char suit = suit_values_pair.first;
+        const std::vector<int>& values = suit_values_pair.second;
+        if (values.size() >= 5) {
+            std::vector<int> sorted_values = values;
+            std::sort(sorted_values.begin(), sorted_values.end());
+            std::vector<int> straight_cards;
+            if (isStraight(sorted_values, straight_cards)) {
+                std::vector<Card> straight_flush_cards;
+                for (const auto& card : cards) {
+                    if (std::find(straight_cards.begin(), straight_cards.end(), card.value) != straight_cards.end() && card.suit == suit) {
+                        straight_flush_cards.push_back(card);
+                    }
+                }
+                if (straight_cards.back() == 14 && straight_cards[straight_cards.size() - 5] == 10) {
+                    return { "Royal Flush", straight_flush_cards };
+                }
+                return { "Straight Flush", straight_flush_cards };
+            }
+        }
+    }
+
+    // Check for four of a kind
+    for (const auto& value_count_pair : value_count) {
+        int value = value_count_pair.first;
+        int count = value_count_pair.second;
+        if (count == 4) {
+            std::vector<Card> four_of_a_kind_cards;
+            for (const auto& card : cards) {
+                if (card.value == value) {
+                    four_of_a_kind_cards.push_back(card);
+                }
+            }
+            return { "Four of a Kind", four_of_a_kind_cards };
+        }
+    }
+
+    // Check for full house
+    int three_value = 0, pair_value = 0;
+    for (const auto& value_count_pair : value_count) {
+        int value = value_count_pair.first;
+        int count = value_count_pair.second;
+        if (count == 3) {
+            three_value = value;
+        }
+        else if (count == 2 && value > pair_value) {
+            pair_value = value;
+        }
+    }
+    if (three_value && pair_value) {
+        std::vector<Card> full_house_cards;
+        for (const auto& card : cards) {
+            if (card.value == three_value || card.value == pair_value) {
+                full_house_cards.push_back(card);
+            }
+        }
+        return { "Full House", full_house_cards };
+    }
+
+    // Check for flush
+    for (const auto& suit_count_pair : suit_count) {
+        char suit = suit_count_pair.first;
+        int count = suit_count_pair.second;
+        if (count >= 5) {
+            std::vector<Card> flush_cards;
+            for (const auto& card : cards) {
+                if (card.suit == suit) {
+                    flush_cards.push_back(card);
+                }
+            }
+            return { "Flush", std::vector<Card>(flush_cards.begin(), flush_cards.begin() + 5) };
+        }
+    }
+
+    // Check for straight
+    std::vector<int> unique_values;
+    for (const auto& card : cards) {
+        if (unique_values.empty() || unique_values.back() != card.value) {
+            unique_values.push_back(card.value);
+        }
+    }
+
+    std::vector<int> straight_cards;
+    if (isStraight(unique_values, straight_cards)) {
+        std::vector<Card> straight_hand_cards;
+        for (const auto& card : cards) {
+            if (std::find(straight_cards.begin(), straight_cards.end(), card.value) != straight_cards.end()) {
+                straight_hand_cards.push_back(card);
+            }
+        }
+        return { "Straight", straight_hand_cards };
+    }
+
+    // Check for three of a kind
+    for (const auto& value_count_pair : value_count) {
+        int value = value_count_pair.first;
+        int count = value_count_pair.second;
+        if (count == 3) {
+            std::vector<Card> three_of_a_kind_cards;
+            for (const auto& card : cards) {
+                if (card.value == value) {
+                    three_of_a_kind_cards.push_back(card);
+                }
+            }
+            return { "Three of a Kind", three_of_a_kind_cards };
+        }
+    }
+
+    // Check for two pair and one pair
+    std::vector<int> pairs;
+    for (const auto& value_count_pair : value_count) {
+        int value = value_count_pair.first;
+        int count = value_count_pair.second;
+        if (count == 2) {
+            pairs.push_back(value);
+        }
+    }
+
+    if (pairs.size() >= 2) {
+        std::vector<Card> two_pair_cards;
+        for (const auto& card : cards) {
+            if (card.value == pairs[0] || card.value == pairs[1]) {
+                two_pair_cards.push_back(card);
+            }
+        }
+        return { "Two Pair", two_pair_cards };
+    }
+
+    if (pairs.size() == 1) {
+        std::vector<Card> one_pair_cards;
+        for (const auto& card : cards) {
+            if (card.value == pairs[0]) {
+                one_pair_cards.push_back(card);
+            }
+        }
+        return { "One Pair", one_pair_cards };
+    }
+
+    // High Card
+    return { "High Card", std::vector<Card>(cards.end() - 5, cards.end()) };
+}
+
+std::string handToString(const std::pair<std::string, std::vector<Card>>& hand) {
+    std::stringstream ss;
+    ss << hand.first << ": ";
+    for (const auto& card : hand.second) {
+        ss << card.value << card.suit << " ";
+    }
+    return ss.str();
+}
 
 int GameManager::getGamePrice() { return m_gamePrice; }
 
@@ -13,6 +237,22 @@ void GameManager::setGamePrice(int price) { m_gamePrice = price; }
 // Holdem 클래스 함수 정의
 string Holdem::selectWinner() {
     // 홀덤 게임의 승자 선택 로직 구현
+    for (int i = 0; i < USERNUM; i++)
+    {
+        for (string fieldCard : m_fieldCard)
+        {
+            m_totalUserCard[i].push_back(fieldCard);
+        }
+    }
+    
+    for (int j = 0; j < USERNUM; j++)
+    {
+        vector<Card> cards = parseCards(m_totalUserCard[j]);
+        pair<string, vector<Card>> result = determineHand(cards);
+        string strResult = handToString(result);
+        m_totalResult.push_back(strResult);
+    }
+    
     return "Holdem Winner";
 }
 
@@ -69,17 +309,35 @@ void Holdem::dealCard()
     m_totalUserCard = usersCard;
 }
 
+void Holdem::betting(int turnNum)
+{
+	int bettingOption;
+	cout << endl << "배팅 선택" << endl;
+	cout << "0 : Call | 1 : Raise | 2 : Fold -> ";
+	cin >> bettingOption;
+}
+
 void Holdem::play()
 {
+	int turnNum = 0;
+	HoldemDesign holdemDesign;
     // 유저 본인 카드 받기
-    // 0번째턴 : 0/5 오픈
-    // 배팅(프리)
-    // 1번째턴 : 3/5 오픈
-    // 배팅(퍼스트)
-    // 2번째턴 : 4/5 오픈
-    // 배팅(세컨드)
-    // 3번째턴 : 5/5 오픈
-    // 배팅(라스트)
+	holdemDesign.printMyCard(m_totalUserCard[0]);
+	while (true)
+	{
+		// n번째턴 : 0/5 -> 3/5 -> 4/5 -> 5/5
+		holdemDesign.printCommunityCard(m_fieldCard, turnNum);
+		// 배팅 : 프리, 퍼스트, 세컨드, 라스트
+		betting(turnNum);
+
+		if (turnNum == 3)
+		{
+            selectWinner();
+			break;
+		}
+
+		turnNum++;
+	}
 }
 
 // OldMaid 클래스 함수 정의
