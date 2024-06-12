@@ -1,6 +1,6 @@
 #include "Design.h"
 
-void Design::cardDesign(string card, int x, int y)
+void Design::cardDesign(string& card, int x, int y)
 {
     string shape = card.substr(0, 1);
     string num = card.substr(1, 1);
@@ -76,7 +76,7 @@ void Design::drawSquare(int x, int y, int width, int height)
 
 }
 
-void Design::printMyCard(vector<string> myCard)
+void Design::printMyCard(vector<string>& myCard)
 {
     vector<string> spade, diamond, heart, clover;
     int myCardSize = myCard.size();
@@ -101,41 +101,39 @@ void Design::printMyCard(vector<string> myCard)
             clover.push_back(num);
         }
     }
-    gotoxy(50, 3);
-    cout << "my Card";
+    gotoxy(50, 2);
+    cout << "------my Card-----";
 
-    gotoxy(50, 4);
-    cout << "♠ | " << 5;
+    gotoxy(50, 3);
+    cout << "| ♠ | ";
     for (int i = 0; i < spade.size(); i++)
     {
         cout << spade[i] << " ";
     }
 
-    gotoxy(50, 5);
-    cout << "◆ | " << 5;
+    gotoxy(50, 4);
+    cout << "| ◆ | ";
     for (int i = 0; i < diamond.size(); i++)
     {
         cout << diamond[i] << " ";
     }
 
-    gotoxy(50, 6);
-    cout << "♥ | " << 5;
+    gotoxy(50, 5);
+    cout << "| ♥ | ";
     for (int i = 0; i < heart.size(); i++)
     {
         cout << heart[i] << " ";
     }
 
-    gotoxy(50, 8);
-    cout << "♣ | " << 5;
+    gotoxy(50, 6);
+    cout << "| ♣ | ";
     for (int i = 0; i < clover.size(); i++)
     {
         cout << clover[i] << " ";
     }
-
-    drawSquare(49, 1, 20, 7);
 }
 
-void Design::printMyInfo(vector<string> myInfo)
+void Design::printMyInfo(vector<string>& myInfo)
 {
     drawSquare(50, 20, 20, 5);
     gotoxy(52, 22);
@@ -146,7 +144,7 @@ void Design::printMyInfo(vector<string> myInfo)
     gotoxy(100, 30);
 }
 
-void HoldemDesign::printCommunityCard(vector<string> communityCard, int turnNum)
+void HoldemDesign::printCommunityCard(vector<string>& communityCard, int turnNum)
 {
     //drawSquare(5, 10, 10, 7); // (x, y, 가로, 세로)
     //drawSquare(25, 10, 10, 7);
@@ -154,19 +152,30 @@ void HoldemDesign::printCommunityCard(vector<string> communityCard, int turnNum)
     //drawSquare(65, 10, 10, 7);
     //drawSquare(85, 10, 10, 7);
 
-    for (int i = 0; i < turnNum + 2; i++)
+    if (turnNum == 0)
     {
-        cardDesign(communityCard[i], 20 - 15 * i, 10);
+        drawSquare(5, 10, 10, 8); // (x, y, 가로, 세로)
+        drawSquare(20, 10, 10, 8);
+        drawSquare(35, 10, 10, 8);
+        drawSquare(50, 10, 10, 8);
+        drawSquare(65, 10, 10, 8);
     }
-
-    if (turnNum == 1)
+    else 
     {
-        drawSquare(65, 10, 10, 7);
-        drawSquare(85, 10, 10, 7);
+        for (int i = 0; i < turnNum + 2; i++)
+        {
+            cardDesign(communityCard[i], 5 + 15 * i, 10);
+        }
+        if (turnNum == 1)
+        {
+            drawSquare(50, 10, 10, 8);
+            drawSquare(65, 10, 10, 8);
+        }
+        else if (turnNum == 2)
+        {
+            drawSquare(65, 10, 10, 8);
+        }
     }
-    else if (turnNum == 2)
-    {
-        drawSquare(85, 10, 10, 7);
-    }
+    
     gotoxy(100, 20);
 }
