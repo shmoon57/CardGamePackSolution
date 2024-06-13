@@ -3,6 +3,7 @@ void Design::cardDesign(string & card, int x, int y)
 {
     string shape = card.substr(0, 1);
     string num = card.substr(1, 1);
+    if (num == "1") { num = "10"; }
 
     if (shape == "s")
     {

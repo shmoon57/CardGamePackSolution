@@ -1,4 +1,10 @@
 #pragma once
+// time 함수 사용
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
+// random_suffle , remove 함수 사용
+#include <algorithm>
 #include <vector>
 #include <string>
 
@@ -47,9 +53,10 @@ private:
 
 class OldMaid : public GameManager
 {
-public:
-	void dealCard() override;
 
+public:
+
+	void dealCard() override;
 	// 중복 제거 함수
 	void removeDuplicates(vector<string>& playerCards);
 	void disCard();
@@ -62,13 +69,28 @@ public:
 	string determineWinner();
 	string selectWinner() override;
 	int getGameRound();
+	void showWinner();
+	// 개수 출력 벡터 만들기(int)
+	void clearScreen();
+
+	// 지울 예정
+	int getzeroCnt();
+	vector<string>& getPlayer1Cards() { return player1Cards; }
+	vector<string>& getPlayer2Cards() { return player2Cards; }
+	vector<string>& getPlayer3Cards() { return player3Cards; }
+
+
 	// 카드 셔플 후 플레이어 1,2,3 각각 해당 받을 카드 벡터 선언
 	vector<string> player1Cards;
 	vector<string> player2Cards;
 	vector<string> player3Cards;
+
+
 private:
+
 	int m_gameRound = 1;
 	int m_zeroCnt = 0;
-	vector<string> players = { "나", "user1" , "user2" };
+	vector<string> players = { "player1", "player2" , "player3" };
 	vector<string> playerOrder;
+
 };

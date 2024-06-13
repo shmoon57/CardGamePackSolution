@@ -37,7 +37,7 @@ void CardDeck::makeDeck(int type)
 				m_cardVector.push_back(suit + rank);
 			}
 		}
-		m_cardVector.push_back("JK");
+		m_cardVector.push_back("joker");
 		break;
 	}
 
