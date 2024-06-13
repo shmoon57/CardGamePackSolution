@@ -1,6 +1,9 @@
 #include <random>
 #include <numeric>
 
+// remove() 함수 사용
+#include <algorithm>
+
 #include "GameManager.h"
 #include "Design.h"
 
@@ -15,15 +18,16 @@ void GameManager::setGamePrice(int price) { m_gamePrice = price; }
 // 도둑잡기 게임의 카드 배분 로직 구현 
 void OldMaid::dealCard()
 {
-	CardDeck card(1);
+	CardDeck OldMaidDeck(1);
 
-	card.suffleCards();
+	OldMaidDeck.suffleCards();
 
-	// 여기 랜덤 추가 해야할듯 14,14,15
-	// 1. 플레이어에게 카드 분배 : 셔플된 카드 덱에서 각 플레이어가 14장, 14장, 15장 분배
-	const int cardsPerPlayer[] = { 14,14,15 };
+	// 여기 랜덤 추가 해야할듯 17,18,18
+	// 1. 플레이어에게 카드 분배 : 셔플된 카드 덱에서 각 플레이어가 17장, 18장, 18장 분배
+	int cardsPerPlayer[] = { 17,18,18 };
+	m_cardVector = OldMaidDeck.getCardVector();
 
-	// 3. 카드 분배 결과 저장 : 각 플레이어가 받은 카드를 별도의 벡터나 다른 적절한 데이터 구조에 저장
+	// 2. 카드 분배 결과 저장 : 각 플레이어가 받은 카드를 별도의 벡터나 다른 적절한 데이터 구조에 저장
 	int cardIndex = 0;
 
 	for (int card = 0; card < cardsPerPlayer[0]; card++)
@@ -32,46 +36,46 @@ void OldMaid::dealCard()
 		cardIndex++;
 	}
 
-	for (int card = 0; card < cardsPerPlayer[0]; card++)
+	for (int card = 0; card < cardsPerPlayer[1]; card++)
 	{
 		player2Cards.push_back(m_cardVector[cardIndex]);
 		cardIndex++;
 	}
 
-	for (int card = 0; card < cardsPerPlayer[0]; card++)
+	for (int card = 0; card < cardsPerPlayer[2]; card++)
 	{
 		player3Cards.push_back(m_cardVector[cardIndex]);
 		cardIndex++;
 	}
 }
 
-void OldMaid::removeDuplicates(std::vector<std::string>& playerCards)
+void OldMaid::removeDuplicates(vector<string>& playerCards)
 {
-	// 중복된 요소를 찾아 제거하는 과정
 	for (int i = 0; i < playerCards.size(); i++)
 	{
-		for (int j = i + 1; j < playerCards.size();)
+		for (int j = i + 1; j < playerCards.size(); j++)
 		{
-			// 현재 요소와 다음 요소를 비교하여 중복 여부 확인
-			if (playerCards[i] == playerCards[j])
+			// 숫자 중복 되는 경우
+			if (playerCards[i].substr(1) == playerCards[j].substr(1))
 			{
-				// 중복된 경우 다음 요소를 현재 요소의 위치에 덮어씌움
-				playerCards.erase(playerCards.begin() + j);
-			}
-			else
-			{
-				// 중복되지 않은 경우 다음 요소로 이동
-				j++;
+				playerCards[i] = "00";
+				playerCards[j] = "00";
+				break;
 			}
 		}
 	}
+	// remove() : 비어 있는 요소들을 벡터의 뒤쪽으로 이동시키고, 새로운 끝 반복자를 반환
+	playerCards.erase(remove(playerCards.begin(), playerCards.end(), "00"), playerCards.end());
 
 	// 현재 플레이어의 카드가 비어 있는지 확인하고, 비어 있다면 m_zeroCnt 증가
-	if (playerCards.empty())
+	//cout << "..............vector size : " << playerCards.size() << "..............." << endl;
+	/*if (playerCards.empty())
 	{
 		m_zeroCnt++;
-	}
+		cout << "..............m_zeroCnt = " << m_zeroCnt << "..............." << endl;
+	}*/
 
+	cout << "카드 가 빈 사람 수 : " << getzeroCnt() << endl;
 }
 
 void OldMaid::disCard()
@@ -107,12 +111,12 @@ void OldMaid::printSelectRoutine()
 
 vector<string>& OldMaid::getPlayerCards(string& player)
 {
-	if (player == "나")
+	if (player == "player1")
 	{
 		return player1Cards;
 	}
 
-	if (player == "user1")
+	if (player == "player2")
 	{
 		return player2Cards;
 	}
@@ -123,15 +127,33 @@ vector<string>& OldMaid::getPlayerCards(string& player)
 	}
 }
 
+void OldMaid::showWinner()
+{
+	cout << endl << "------------showWinner-----------" << endl;
+	cout << "Player1 card size : " << this->player1Cards.size() << endl;
+	cout << "Player2 card size : " << this->player2Cards.size() << endl;
+	cout << "Player3 card size : " << this->player3Cards.size() << endl << endl;
+
+	if (this->player1Cards.size() == 0 ||
+		this->player2Cards.size() == 0 ||
+		this->player3Cards.size() == 0)
+	{
+		m_zeroCnt++;
+		cout << "-------m_zeroCnt : " << m_zeroCnt << "-----------" << endl;
+	}
+}
+
 // 1턴 기준 상대방 카드를 임의로 뽑기
 void OldMaid::pickCard()
 {
+	// debug
+	cout << "..............pickCard()............" << endl;
+
 	// 플레이어들이 순서대로 카드를 뽑기 시작합니다.
 	for (int i = 0; i < playerOrder.size(); i++)
 	{
 		// 현재 순서의 플레이어
 		string& currentPlayer = playerOrder[i];
-
 
 		// 다음 순서의 플레이어
 		string& nextPlayer = playerOrder[(i + 1) % playerOrder.size()];
@@ -154,18 +176,44 @@ void OldMaid::pickCard()
 
 		// 현재 순서의 플레이어 카드 목록을 참조로 가져옵니다.
 		vector<string>& currentPlayerCards = getPlayerCards(currentPlayer);
+
 		// 현재 플레이어의 카드 목록에 선택된 카드를 추가합니다.
 		currentPlayerCards.push_back(pickedCard);
+
 		// 다음 플레이어의 카드 목록에서 선택된 카드를 제거합니다.
 		nextPlayerCards.erase(nextPlayerCards.begin() + cardIndex);
 		cout << currentPlayer << "가 " << nextPlayer << "의 카드를 뽑았습니다: " << pickedCard << "\n";
+
 		// 중복된 카드를 제거
 		removeDuplicates(currentPlayerCards);
-		// pickCard() 기준으로 게임라운드 변수 증가
-		m_gameRound++;
+
+		cout << "뽑은 후 결과 \n" << "Player 1 Cards: ";
+		for (const string& card : getPlayer1Cards()) {
+			cout << card << " ";
+		}
+		cout << endl;
+
+		cout << "Player 2 Cards: ";
+		for (const string& card : getPlayer2Cards()) {
+			cout << card << " ";
+		}
+		cout << endl;
+
+		cout << "Player 3 Cards: ";
+		for (const string& card : getPlayer3Cards()) {
+			cout << card << " ";
+		}
+		cout << endl;
+
+		// 플레이어 카드가 비어있는걸 인식 못함
+		// 뽑은 후 1장 남아 있기 = 2장이었는데 pickCard 이후 중복카드 제거 했을 때 
+		showWinner();
+
 	}
 
 
+	// pickCard() 기준으로 게임라운드 변수 증가
+	m_gameRound++;
 }
 
 string OldMaid::determineWinner() {
@@ -194,14 +242,15 @@ string OldMaid::determineWinner() {
 
 string OldMaid::selectWinner()
 {
+	// m_zeroCnt가 2가 아닌 경우, pickCard() 함수 호출
+	pickCard();
+
 	// 만약 m_zeroCnt가 2인 경우 (즉, 카드가 없는 플레이어가 2명 이상인 경우)
 	if (m_zeroCnt == 2)
 	{
 		// 승자를 결정하고 반환
 		return determineWinner();
 	}
-	// m_zeroCnt가 2가 아닌 경우, pickCard() 함수 호출
-	pickCard();
 
 	// 게임이 아직 종료되지 않았으므로 빈 문자열 반환
 	return "";
@@ -212,6 +261,10 @@ int OldMaid::getGameRound()
 	return m_gameRound;
 }
 
+int OldMaid::getzeroCnt()
+{
+	return m_zeroCnt;
+}
 
 // Holdem 클래스 함수 정의
 string Holdem::selectWinner() {
