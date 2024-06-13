@@ -26,6 +26,7 @@ int main()
 			user.login();
 			break;
 		}
+
 		else if (option == "3")
 		{
 			cout << "프로그램을 종료합니다.\n";

@@ -38,10 +38,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameManager.h">
+    <ClInclude Include="User.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="User.h">
+    <ClInclude Include="GameManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CardDeck.h">

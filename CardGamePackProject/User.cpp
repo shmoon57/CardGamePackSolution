@@ -275,3 +275,4 @@ void User::setGamePoint(string gainedPoint)
 {
 	this->m_gamePoint = to_string(stoi(m_gamePoint) + stoi(gainedPoint));
 }
+

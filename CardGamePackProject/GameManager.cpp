@@ -4,6 +4,9 @@
 #include <set>
 #include <sstream>
 
+// remove() 함수 사용
+#include <algorithm>
+
 #include "GameManager.h"
 #include "Design.h"
 
@@ -354,132 +357,11 @@ int GameManager::getGamePrice() { return m_gamePrice; }
 
 void GameManager::setGamePrice(int price) { m_gamePrice = price; }
 
-// Holdem 클래스 함수 정의
-string Holdem::selectWinner() {
-    // 홀덤 게임의 승자 선택 로직 구현
-    for (int i = 0; i < USERNUM; i++)
-    {
-        for (string fieldCard : m_fieldCard)
-        {
-            m_totalUserCard[i].push_back(fieldCard);
-        }
-    }
-    
-    for (int j = 0; j < USERNUM; j++)
-    {
-        //vector <string> testV = { "s2", "dA", "d10", "d9", "d6", "dK", "c2" };
-        //vector<Card> cards = parseCards(testV);
-        vector<Card> cards = parseCards(m_totalUserCard[j]);
-        pair<string, vector<Card>> result = determineHand(cards);
-        string strResult = handToString(result);
-        m_totalResult.push_back(strResult);
-    }
-    
-    int winnerIdx = checkFinalWinner();
-    
-    if (winnerIdx == -1)
-    {
-        cout << "무승부입니다!" << endl;
-        return "0";
-    }
-    // user 인스턴스 기반으로 닉네임 가져오기
-    // 닉네임 포함한 string 벡터의 우승자 idx 접근하기
-    
-    cout << std::to_string(winnerIdx) + "번째 플레이어 우승" << endl;
-    return "0";
-}
-
-void Holdem::dealCard()
-{
-    // 홀덤 게임의 카드 배분 로직 구현
-    //카드 덱 생성
-    CardDeck card(2); //홀덤 option == 2
-
-    //카드 섞기 및 카드 벡터 가져오기
-    card.suffleCards();
-    vector<string> cardVector = card.getCardVector();
-    
-    ////랜덤하게 필드카드 5장 가져오고 기존 cardVector에서 값 빼기
-    //랜덤 엔진 초기화
-    random_device rd;
-    mt19937 g(rd());
-
-    //벡터 인덱스
-    vector<int> indices(cardVector.size());
-    iota(indices.begin(), indices.end(), 0);
-
-    //인덱스 무작위 섞기
-    shuffle(indices.begin(), indices.end(), g);
-
-    //무작위 5개의 인덱스 벡터 생성
-    vector<int> selected_indices(indices.begin(), indices.begin() + 5);
-
-    //필드에 있을 5개 카드 벡터 생성
-    vector<string> fieldCard;
-    for (int index : selected_indices) {
-        fieldCard.push_back(cardVector[index]);
-    }
-
-    //뽑은 5개의 카드를 기존의 cardVector에서 제거
-    sort(selected_indices.rbegin(), selected_indices.rend());
-    for (int index : selected_indices) {
-        cardVector.erase(cardVector.begin() + index);
-    }
-
-    ////나머지 cardVector에서 랜덤하게 2장씩 가져와 usersCard에 넣기
-    vector<vector <string>> usersCard(USERNUM);
-
-    for (int i = 0; i < USERNUM; i++)
-    {
-        for (int j = 0; j < 2; j++)
-        {
-            usersCard[i].push_back(cardVector.back());
-            cardVector.pop_back();
-        }
-    }
-
-    m_fieldCard = fieldCard;
-    m_totalUserCard = usersCard;
-}
-
-void Holdem::betting(int turnNum)
-{
-	int bettingOption;
-	cout << endl << "배팅 선택" << endl;
-	cout << "0 : Call | 1 : Raise | 2 : Fold -> ";
-	cin >> bettingOption;
-}
-
-void Holdem::play()
-{
-	int turnNum = 0;
-	HoldemDesign holdemDesign;
-    // 유저 본인 카드 받기
-	holdemDesign.printMyCard(m_totalUserCard[0]);
-	while (true)
-	{
-		// n번째턴 : 0/5 -> 3/5 -> 4/5 -> 5/5
-		holdemDesign.printCommunityCard(m_fieldCard, turnNum);
-		// 배팅 : 프리, 퍼스트, 세컨드, 라스트
-		betting(turnNum);
-
-        // Fold 하지 않은 유저만 winner로 보여주기
-		if (turnNum == 3)
-		{
-            selectWinner();
-			break;
-		}
-
-		turnNum++;
-	}
-}
-
 // OldMaid 클래스 함수 정의
 // 도둑잡기 게임의 카드 배분 로직 구현 
 void OldMaid::dealCard()
 {
     CardDeck OldMaidDeck(1);
-
     OldMaidDeck.suffleCards();
 
     // 여기 랜덤 추가 해야할듯 17,18,18
@@ -602,6 +484,22 @@ void OldMaid::showWinner()
     }
 }
 
+void OldMaid::showWinner()
+{
+	cout << endl << "------------showWinner-----------" << endl;
+	cout << "Player1 card size : " << this->player1Cards.size() << endl;
+	cout << "Player2 card size : " << this->player2Cards.size() << endl;
+	cout << "Player3 card size : " << this->player3Cards.size() << endl << endl;
+
+	if (this->player1Cards.size() == 0 ||
+		this->player2Cards.size() == 0 ||
+		this->player3Cards.size() == 0)
+	{
+		m_zeroCnt++;
+		cout << "-------m_zeroCnt : " << m_zeroCnt << "-----------" << endl;
+	}
+}
+
 // 1턴 기준 상대방 카드를 임의로 뽑기
 void OldMaid::pickCard()
 {
@@ -616,6 +514,7 @@ void OldMaid::pickCard()
 
         // 다음 순서의 플레이어
         string& nextPlayer = playerOrder[(i + 1) % playerOrder.size()];
+
 
         cout << currentPlayer << "의 차례입니다.\n";
 

@@ -1,6 +1,6 @@
 #include <ctime>
-
 #include "CardDeck.h"
+
 
 void CardDeck::suffleCards()
 {
@@ -26,7 +26,6 @@ void CardDeck::makeDeck(int type)
 	vector<string> ranks = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
 	// 카드의 슈트
 	vector<string> suits = { "s", "d", "h", "c" }; // 스페이드, 다이아, 하트, 클로버
-
 	switch (type)
 	{
 	case 1: // 도둑잡기
@@ -37,6 +36,7 @@ void CardDeck::makeDeck(int type)
 				m_cardVector.push_back(suit + rank);
 			}
 		}
+
 		m_cardVector.push_back("joker");
 		break;
 	}

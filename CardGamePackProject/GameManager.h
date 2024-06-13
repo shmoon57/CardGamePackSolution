@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-
 #include "CardDeck.h"
 
 using namespace std;
@@ -18,7 +17,7 @@ public:
 	GameManager() { m_gameType = 0; m_gamePrice = 0; }
 	int getGamePrice();
 	void setGamePrice(int price);
-	
+
 	// 가상 함수 선언
 	virtual string selectWinner() = 0;
 	virtual void dealCard() = 0;
@@ -29,6 +28,7 @@ protected:
 	vector <string> m_cardVector;
 
 };
+
 
 class Holdem : public GameManager
 {
