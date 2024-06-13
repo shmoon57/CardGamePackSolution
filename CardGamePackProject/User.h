@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <cstdlib>
+#include <conio.h> // for _getch()
 
 using namespace std;
 
@@ -15,9 +17,12 @@ public:
 	void writeUser(vector<string> userInfo); //userInfo = [ID, password, nickname, point]
 	vector<vector<string>> openUser();
 	void signUp();
+
+protected:
+	string inputPassword();
 };
 
-//·Î±×ÀÎÀ» ÇÏ¸é¼­ »ı¼ºµÇ´Â °ÍÀÌ ÁÁÀ» °Í °°À½
+//ë¡œê·¸ì¸ì„ í•˜ë©´ì„œ ìƒì„±ë˜ëŠ” ê²ƒì´ ì¢‹ì„ ê²ƒ ê°™ìŒ
 class User : public UserDataManager
 {
 
@@ -25,10 +30,9 @@ protected:
 	string m_ID;
 	string m_password;
 	string m_nickname;
-	string m_gamePoint;
+	string m_gamePoint = "0";
 
 public:
-	void showUserInfo();
 	void login();
 
 	string getID();
