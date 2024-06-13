@@ -22,7 +22,7 @@ void Design::cardDesign(string& card, int x, int y)
         shape = "¢À";
     }
 
-    drawSquare(x, y, 10, 7);
+    drawSquare(x, y, 10, 8);
     gotoxy(x + 1, y + 1);
     cout << num;
     gotoxy(x + 9, y + 7);
@@ -87,8 +87,8 @@ void Design::printMyCard(vector<string>& myCard)
     int myCardSize = myCard.size();
     for (int i = 0; i < myCardSize; i++)
     {
-        string shape = myCard[0].substr(0, 1);
-        string num = myCard[0].substr(1, 1);
+        string shape = myCard[i].substr(0, 1);
+        string num = myCard[i].substr(1, 1);
         if (shape == "s")
         {
             spade.push_back(num);

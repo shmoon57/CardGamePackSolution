@@ -9,7 +9,7 @@ using namespace std;
 class GameManager
 {
 public:
-	GameManager() {}
+	GameManager() { m_gameType = 0; m_gamePrice = 0; }
 	int getGamePrice();
 	void setGamePrice(int price);
 	
@@ -33,11 +33,13 @@ public:
 	void play();
 
 private:
+	void betting(int turnNum);
 	int m_gameCnt;
 	int m_activePlayerNum;
 	int m_sumBettingPoint;
 	vector <string> m_fieldCard;
 	vector <vector <string>> m_totalUserCard;
+	vector <string> m_totalResult;
 };
 
 class OldMaid : public GameManager
