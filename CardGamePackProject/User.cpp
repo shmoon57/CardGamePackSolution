@@ -81,27 +81,57 @@ vector<vector<string>> UserDataManager::openUser()
 
 void UserDataManager::signUp() //회원가입
 {
+	vector<vector<string>> userdata = openUser();
 	vector<string> user;
+	int userNum = userdata.size();
 	string ID, password, checkingpassword, nickname;
+	bool signUpOK;
 
+	system("cls");
 	cout << "---------------------회원가입---------------------\n";
 
 	while (true)
 	{
-		cout << "아이디			: ";
+		cout << "아이디 : ";
 		cin >> ID;
-		cout << "비밀번호			: ";
-		cin >> password;
-		cout << "비밀번호 확인	: ";
-		cin >> checkingpassword;
-		cout << "닉네임			: ";
-		cin >> nickname;
 
-		if (password != checkingpassword)
+		// 기존에 아이디가 존재하는 경우
+		bool ExistingUser = false;
+		for (int i = 0; i < userNum; i++)
 		{
-			cout << "비밀번호가 일치하지 않습니다.\n";
+			if (userdata[i][0] == ID) {
+				ExistingUser = true;
+			}
 		}
-		else {
+		if (ExistingUser)
+		{
+			continue;
+		}
+
+		// 신규 유저인 경우
+		cout << "닉네임 : ";
+		cin >> nickname;
+		cout << "비밀번호 : ";
+		password = inputPassword();
+
+		// 비밀번호 확인
+		while (true)
+		{
+			cout << "비밀번호 확인 : ";
+			checkingpassword = inputPassword();
+			if (password != checkingpassword)
+			{
+				cout << "비밀번호가 일치하지 않습니다.\n";
+				continue;
+			}
+			else
+			{
+				signUpOK = true;
+				break;
+			}
+		}
+		if (signUpOK)
+		{
 			break;
 		}
 	}
@@ -116,6 +146,38 @@ void UserDataManager::signUp() //회원가입
 	//read_file.close();
 }
 
+string UserDataManager::inputPassword()
+{
+	const char BACKSPACE = 8;
+	const char RETURN = 13;
+
+	string password;
+	char ch;
+
+	// 비밀번호 입력 받기
+	while (true) {
+		ch = _getch();
+
+		if (ch == RETURN) {
+			std::cout << std::endl;
+			break;
+		}
+		else if (ch == BACKSPACE) {
+			if (!password.empty()) {
+				std::cout << "\b \b"; // 백스페이스 처리
+				password.pop_back();
+			}
+		}
+		else {
+			std::cout << '*'; // '*'로 대체
+			password.push_back(ch);
+		}
+	}
+
+	return password;
+
+}
+
 void User::login() //로그인 return : Nickname, point
 {
 	vector<vector<string>> data = openUser();
@@ -124,10 +186,13 @@ void User::login() //로그인 return : Nickname, point
 	int userIndex = -1; // 로그인하는 user의 index
 	string ID, password;
 
+	system("cls");
+	cout << "---------------------로그인---------------------\n";
+
 	//ID가 존재하는 지 확인
 	while (isUser == false)
 	{
-		cout << "아이디			: \n";
+		cout << "아이디 : ";
 		cin >> ID;
 		// data를 살피며 id가 존재하는지 확인
 		for (int i = 0; i < userNum; i++)
@@ -136,6 +201,7 @@ void User::login() //로그인 return : Nickname, point
 			{
 				isUser = true;
 				userIndex = i;
+				break;
 			}
 		}
 
@@ -149,8 +215,8 @@ void User::login() //로그인 return : Nickname, point
 	//비밀번호 확인
 	while (true)
 	{
-		cout << "비밀번호			: \n";
-		cin >> password;
+		cout << "비밀번호 : ";
+		password = inputPassword();
 
 		if (password == data[userIndex][1])
 		{
@@ -168,12 +234,6 @@ void User::login() //로그인 return : Nickname, point
 	setPassword(data[userIndex][1]);
 	setNickname(data[userIndex][2]);
 	setGamePoint(data[userIndex][3]);
-}
-
-void User::showUserInfo()
-{
-
-
 }
 
 string User::getID()

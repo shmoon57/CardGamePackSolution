@@ -1,10 +1,9 @@
 #pragma once
-
 // time 함수 사용
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
-// random_suffle 함수 사용
+// random_suffle , remove 함수 사용
 #include <algorithm>
 #include <vector>
 #include <string>
@@ -12,14 +11,10 @@
 
 using namespace std;
 
-#ifndef __GameManager__
-#define __GameManager__
-
-
 class GameManager
 {
 public:
-	GameManager() {}
+	GameManager() { m_gameType = 0; m_gamePrice = 0; }
 	int getGamePrice();
 	void setGamePrice(int price);
 
@@ -42,13 +37,18 @@ public:
 	string selectWinner() override;
 	void dealCard() override;
 	void play();
+	int checkFinalWinner();
 
 private:
+	void betting(int turnNum);
 	int m_gameCnt;
 	int m_activePlayerNum;
 	int m_sumBettingPoint;
+	vector <vector <string>> m_userRankResultCardVector;
+	vector <string> m_userRankResultVector;
 	vector <string> m_fieldCard;
 	vector <vector <string>> m_totalUserCard;
+	vector <string> m_totalResult;
 };
 
 class OldMaid : public GameManager
@@ -71,6 +71,7 @@ public:
 	int getGameRound();
 	void showWinner();
 	// 개수 출력 벡터 만들기(int)
+	void clearScreen();
 
 	// 지울 예정
 	int getzeroCnt();
@@ -78,7 +79,6 @@ public:
 	vector<string>& getPlayer2Cards() { return player2Cards; }
 	vector<string>& getPlayer3Cards() { return player3Cards; }
 
-	
 
 	// 카드 셔플 후 플레이어 1,2,3 각각 해당 받을 카드 벡터 선언
 	vector<string> player1Cards;
@@ -87,14 +87,10 @@ public:
 
 
 private:
-	
+
 	int m_gameRound = 1;
 	int m_zeroCnt = 0;
 	vector<string> players = { "player1", "player2" , "player3" };
 	vector<string> playerOrder;
 
 };
-
-#endif
-
-

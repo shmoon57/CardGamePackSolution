@@ -1,118 +1,79 @@
-#include "GameManager.h"
+
+#include <ctime>
+
 #include "CardDeck.h"
-#include <algorithm>
-
-
-using std::cout;
-using std::endl;
-
-void clearScreen();
-
+#include "User.h"
+#include "GameManager.h"
+#include "Design.h"
 int main()
 {
-
-	// 도둑잡기 객체 생성
-	OldMaid game1;
-
-	// 1. 게임 시작전 유저 접속 확인 창
-	cout << "도둑잡기 \n";
-	cout << "다른 유저를 기다리는중....";
-	/*
-	if (모든 유저 참가)
-	{
-		cout << "모든 유저가 참가하였습니다 ! "<< endl << "게임을 시작합니다";
-	}
-	*/
-
-	// 화면 초기화
-	// clearScreen();  
-	cout << endl<< game1.getzeroCnt() << endl;
-	// 2. 게임 시작 창
-	cout << "도둑잡기 \n";
-	cout << "게임 시작 ! \n\n";
-
-	// 2 - 1) 카드 분배
-	cout << "(1) 카드를 분배합니다.\n";
-	game1.dealCard();
-
-	cout << "카드 분배 결과 \n";
-	cout << "Player 1 Cards: ";
-	for (const string& card : game1.getPlayer1Cards()) {
-		cout << card << " ";
-	}
-	cout << endl;
-
-	cout << "Player 2 Cards: ";
-	for (const string& card : game1.getPlayer2Cards()) {
-		cout << card << " ";
-	}
-	cout << endl;
-
-	cout << "Player 3 Cards: ";
-	for (const string& card : game1.getPlayer3Cards()) {
-		cout << card << " ";
-	}
-	cout << endl << endl;
-
-	// if JK 벡터 존재
-	// cout << "조커입니다! 평정심을 유지해주세요\n"
-	// else 현재 카드에 조커는 없습니다 ;
-
-	// 2 - 2) 중복 카드를 버리기
-	cout << "(2) 중복된 숫자카드를 버립니다.\n";
-	cout << "카드를 버려주세요.\n";
-	game1.disCard();
-
-	cout << "Player 1 Cards: ";
-	for (const string& card : game1.getPlayer1Cards()) {
-		cout << card << " ";
-	}
-	cout << endl;
-
-	cout << "Player 2 Cards: ";
-	for (const string& card : game1.getPlayer2Cards()) {
-		cout << card << " ";
-	}
-	cout << endl;
-
-	cout << "Player 3 Cards: ";
-	for (const string& card : game1.getPlayer3Cards()) {
-		cout << card << " ";
-	}
-	cout << endl;
-
-	// 2 - 3) 카드 뽑을 순서 정하기
-	game1.selectRoutine();
-	game1.printSelectRoutine();
-
-	//clearScreen();
-	//game1.pickCard();
+	UserDataManager manager;
+	User user;
 	
-	// 3. 턴 별 게임 진행
+	//회원가입, 로그인 선택
 	while (true)
 	{
-		cout << endl;
-		cout << "도둑잡기 \n";
-		cout << game1.getGameRound() << "번째 턴입니다" << endl;
-
-		// 우승자 확인
-		string winner = game1.selectWinner();
-
-		if (!winner.empty())
+		cout << "♠CARD GAME♠\n";
+		string option = "0";
+		cout << "1. 회원가입 2. 로그인 3. 프로그램 종료 \n";
+		cin >> option;
+		if (option == "1")
 		{
-			cout << winner << endl;
+			manager.signUp();
+		}
+		else if (option == "2")
+		{
+			user.login();
 			break;
 		}
+
+		else if (option == "3")
+		{
+			cout << "프로그램을 종료합니다.\n";
+			return 0;
+		}
+		else
+		{
+			cout << "잘못된 입력입니다.\n";
+		}
 	}
-
-	return 0;
-}
 	
-	
+	cout << user.getGamePoint() << endl;
 
-void clearScreen()
-{
-	system("cls");
+	while (true)
+	{
+		string option;
+		cout << "게임을 선택하세요." << endl;
+		cout << "1. 도둑잡기 2. 홀덤 3. 게임 종료" << endl;
+		cin >> option;
+		if (option == "1")
+		{
+			system("cls");
+			//도둑잡기
+			cout << "도둑잡기를 시작합니다." << endl;
+		}
+		else if (option == "2")
+		{
+			system("cls");
+			//홀덤
+			cout << "홀덤을 시작합니다." << endl;
+			Holdem holdem;
+
+			cout << "카드를 섞어 배분합니다." << endl;
+			holdem.dealCard();
+
+			cout << "홀덤을 시작합니다." << endl;
+			holdem.play();
+		}
+
+		else if (option == "3")
+		{
+			cout << "프로그램을 종료합니다." << endl;
+			return 0;
+		}
+		else
+		{
+			cout << "잘못된 입력입니다." << endl;
+		}
+  }
 }
-
-
