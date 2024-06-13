@@ -4,19 +4,18 @@
 #include "CardDeck.h"
 #include "User.h"
 #include "GameManager.h"
-
 int main()
 {
 	UserDataManager manager;
 	User user;
 	
-	//È¸¿ø°¡ÀÔ, ·Î±×ÀÎ ¼±ÅÃ
+	//íšŒì›ê°€ì…, ë¡œê·¸ì¸ ì„ íƒ
 	while (true)
 	{
 		system("cls");
-		cout << "¢¼CARD GAME¢¼\n";
+		cout << "â™ CARD GAMEâ™ \n";
 		string option = "0";
-		cout << "1. È¸¿ø°¡ÀÔ 2. ·Î±×ÀÎ 3. ÇÁ·Î±×·¥ Á¾·á \n";
+		cout << "1. íšŒì›ê°€ì… 2. ë¡œê·¸ì¸ 3. í”„ë¡œê·¸ë¨ ì¢…ë£Œ \n";
 		cin >> option;
 		if (option == "1")
 		{
@@ -29,22 +28,50 @@ int main()
 		}
 		else if (option == "3")
 		{
-			cout << "ÇÁ·Î±×·¥À» Á¾·áÇÕ´Ï´Ù.\n";
+			cout << "í”„ë¡œê·¸ë¨ì„ ì¢…ë£Œí•©ë‹ˆë‹¤.\n";
 			break;
 		}
 		else
 		{
-			cout << "Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù.\n";
+			cout << "ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤.\n";
 		}
 	}
 	
 	cout << user.getGamePoint() << endl;
 
-	Holdem holdem;
+	while (true)
+	{
+		string option;
+		cout << "ê²Œì„ì„ ì„ íƒí•˜ì„¸ìš”." << endl;
+		cin >> option;
+		if (option == "1")
+		{
+			system("cls");
+			//ë„ë‘‘ì¡ê¸°
+			cout << "ë„ë‘‘ì¡ê¸°ë¥¼ ì‹œì‘í•©ë‹ˆë‹¤." << endl;
+		}
+		else if (option == "2")
+		{
+			system("cls");
+			//í™€ë¤
+			cout << "í™€ë¤ì„ ì‹œì‘í•©ë‹ˆë‹¤." << endl;
+			Holdem holdem;
 
-	cout << "Ä«µå¸¦ ¼¯¾î ¹èºĞÇÕ´Ï´Ù." << endl;
-	holdem.dealCard();
+			cout << "ì¹´ë“œë¥¼ ì„ì–´ ë°°ë¶„í•©ë‹ˆë‹¤." << endl;
+			holdem.dealCard();
 
-	cout << "È¦´ıÀ» ½ÃÀÛÇÕ´Ï´Ù." << endl;
-	holdem.play();
+			cout << "í™€ë¤ì„ ì‹œì‘í•©ë‹ˆë‹¤." << endl;
+			holdem.play();
+
+		}
+		else if (option == "3")
+		{
+			cout << "í”„ë¡œê·¸ë¨ì„ ì¢…ë£Œí•©ë‹ˆë‹¤." << endl;
+			break;
+		}
+		else
+		{
+			cout << "ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤." << endl;
+		}
+  }
 }
