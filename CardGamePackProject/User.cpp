@@ -112,13 +112,13 @@ void UserDataManager::signUp() //회원가입
 		cout << "닉네임 : ";
 		cin >> nickname;
 		cout << "비밀번호 : ";
-		cin >> password;
+		password = inputPassword();
 
 		// 비밀번호 확인
 		while (true)
 		{
 			cout << "비밀번호 확인 : ";
-			cin >> checkingpassword;
+			checkingpassword = inputPassword();
 			if (password != checkingpassword)
 			{
 				cout << "비밀번호가 일치하지 않습니다.\n";
@@ -144,6 +144,38 @@ void UserDataManager::signUp() //회원가입
 
 	cout << "회원가입이 완료되었습니다. \n";
 	//read_file.close();
+}
+
+string UserDataManager::inputPassword()
+{
+	const char BACKSPACE = 8;
+	const char RETURN = 13;
+
+	string password;
+	char ch;
+
+	// 비밀번호 입력 받기
+	while (true) {
+		ch = _getch();
+
+		if (ch == RETURN) {
+			std::cout << std::endl;
+			break;
+		}
+		else if (ch == BACKSPACE) {
+			if (!password.empty()) {
+				std::cout << "\b \b"; // 백스페이스 처리
+				password.pop_back();
+			}
+		}
+		else {
+			std::cout << '*'; // '*'로 대체
+			password.push_back(ch);
+		}
+	}
+
+	return password;
+
 }
 
 void User::login() //로그인 return : Nickname, point
@@ -184,7 +216,7 @@ void User::login() //로그인 return : Nickname, point
 	while (true)
 	{
 		cout << "비밀번호 : ";
-		cin >> password;
+		password = inputPassword();
 
 		if (password == data[userIndex][1])
 		{
