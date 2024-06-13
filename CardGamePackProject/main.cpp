@@ -4,6 +4,7 @@
 #include "CardDeck.h"
 #include "User.h"
 #include "GameManager.h"
+#include "Design.h"
 int main()
 {
 	UserDataManager manager;
@@ -12,7 +13,6 @@ int main()
 	//회원가입, 로그인 선택
 	while (true)
 	{
-		system("cls");
 		cout << "♠CARD GAME♠\n";
 		string option = "0";
 		cout << "1. 회원가입 2. 로그인 3. 프로그램 종료 \n";
@@ -29,7 +29,7 @@ int main()
 		else if (option == "3")
 		{
 			cout << "프로그램을 종료합니다.\n";
-			break;
+			return 0;
 		}
 		else
 		{
@@ -43,6 +43,7 @@ int main()
 	{
 		string option;
 		cout << "게임을 선택하세요." << endl;
+		cout << "1. 도둑잡기 2. 홀덤 3. 게임 종료" << endl;
 		cin >> option;
 		if (option == "1")
 		{
@@ -67,7 +68,7 @@ int main()
 		else if (option == "3")
 		{
 			cout << "프로그램을 종료합니다." << endl;
-			break;
+			return 0;
 		}
 		else
 		{

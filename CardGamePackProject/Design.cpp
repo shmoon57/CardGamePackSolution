@@ -105,31 +105,31 @@ void Design::printMyCard(vector<string>& myCard)
             clover.push_back(num);
         }
     }
-    gotoxy(50, 2);
+    gotoxy(50, 3);
     cout << "------my Card-----";
 
-    gotoxy(50, 3);
+    gotoxy(50, 4);
     cout << "| ♠ | ";
     for (int i = 0; i < spade.size(); i++)
     {
         cout << spade[i] << " ";
     }
 
-    gotoxy(50, 4);
+    gotoxy(50, 5);
     cout << "| ◆ | ";
     for (int i = 0; i < diamond.size(); i++)
     {
         cout << diamond[i] << " ";
     }
 
-    gotoxy(50, 5);
+    gotoxy(50, 6);
     cout << "| ♥ | ";
     for (int i = 0; i < heart.size(); i++)
     {
         cout << heart[i] << " ";
     }
 
-    gotoxy(50, 6);
+    gotoxy(50, 7);
     cout << "| ♣ | ";
     for (int i = 0; i < clover.size(); i++)
     {
@@ -139,11 +139,11 @@ void Design::printMyCard(vector<string>& myCard)
 
 void Design::printMyInfo(vector<string>& myInfo)
 {
-    drawSquare(50, 15, 20, 5);
-    gotoxy(52, 17);
-    cout << myInfo[2];
-    gotoxy(52, 18);
-    cout << myInfo[3];
+    drawSquare(80, 3, 20, 5);
+    gotoxy(82, 5);
+    cout << "닉네임 : " << myInfo[0];
+    gotoxy(82, 6);
+    cout << "포인트 : " << myInfo[1];
 
     gotoxy(100, 30);
 }
@@ -229,7 +229,7 @@ void OldMaidDesign::printJoker()
     setConsoleTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY); // 빨간색 설정
     // Print each row of the combined letters
     for (size_t row = 0; row < max_height; ++row) {
-        gotoxy(50, 7 + row);
+        gotoxy(50, 8 + row);
         for (const auto& letter : letters) {
             if (row < letter.size()) {
                 cout << letter[row];
@@ -244,6 +244,25 @@ void OldMaidDesign::printJoker()
     }
     setConsoleTextColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); // 기본 색상으로 복원
 }
+
+void OldMaidDesign::printCardNum(string nickname, vector<int>& cardNum)
+{
+    //drawSquare(1, 3, 30, 5);
+    for (int i = 0; i < 3; i++)
+    {
+        gotoxy(2, 4 + i);
+        if (i == 0)
+        {
+            cout << nickname << "의 카드 수 : " << cardNum[i];
+        }
+        else
+        {
+            cout << i + 1 << "번째 player의 카드 수 : " << cardNum[i];
+        }
+    }
+
+}
+
 
 vector<string> OldMaidDesign::getJ() {
     return {
