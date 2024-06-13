@@ -31,12 +31,15 @@ public:
 	string selectWinner() override;
 	void dealCard() override;
 	void play();
+	int checkFinalWinner();
 
 private:
 	void betting(int turnNum);
 	int m_gameCnt;
 	int m_activePlayerNum;
 	int m_sumBettingPoint;
+	vector <vector <string>> m_userRankResultCardVector;
+	vector <string> m_userRankResultVector;
 	vector <string> m_fieldCard;
 	vector <vector <string>> m_totalUserCard;
 	vector <string> m_totalResult;

@@ -9,13 +9,13 @@ int main()
 	UserDataManager manager;
 	User user;
 	
-	//íšŒì›ê°€ì…, ë¡œê·¸ì¸ ì„ íƒ
+	//È¸¿ø°¡ÀÔ, ·Î±×ÀÎ ¼±ÅÃ
 	while (true)
 	{
 		system("cls");
-		cout << "â™ CARD GAMEâ™ \n";
+		cout << "¢¼CARD GAME¢¼\n";
 		string option = "0";
-		cout << "1. íšŒì›ê°€ì… 2. ë¡œê·¸ì¸ 3. í”„ë¡œê·¸ë¨ ì¢…ë£Œ \n";
+		cout << "1. È¸¿ø°¡ÀÔ 2. ·Î±×ÀÎ 3. ÇÁ·Î±×·¥ Á¾·á \n";
 		cin >> option;
 		if (option == "1")
 		{
@@ -28,12 +28,12 @@ int main()
 		}
 		else if (option == "3")
 		{
-			cout << "í”„ë¡œê·¸ë¨ì„ ì¢…ë£Œí•©ë‹ˆë‹¤.\n";
+			cout << "ÇÁ·Î±×·¥À» Á¾·áÇÕ´Ï´Ù.\n";
 			break;
 		}
 		else
 		{
-			cout << "ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤.\n";
+			cout << "Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù.\n";
 		}
 	}
 	
@@ -42,36 +42,36 @@ int main()
 	while (true)
 	{
 		string option;
-		cout << "ê²Œì„ì„ ì„ íƒí•˜ì„¸ìš”." << endl;
+		cout << "°ÔÀÓÀ» ¼±ÅÃÇÏ¼¼¿ä." << endl;
 		cin >> option;
 		if (option == "1")
 		{
 			system("cls");
-			//ë„ë‘‘ì¡ê¸°
-			cout << "ë„ë‘‘ì¡ê¸°ë¥¼ ì‹œì‘í•©ë‹ˆë‹¤." << endl;
+			//µµµÏÀâ±â
+			cout << "µµµÏÀâ±â¸¦ ½ÃÀÛÇÕ´Ï´Ù." << endl;
 		}
 		else if (option == "2")
 		{
 			system("cls");
-			//í™€ë¤
-			cout << "í™€ë¤ì„ ì‹œì‘í•©ë‹ˆë‹¤." << endl;
+			//È¦´ı
+			cout << "È¦´ıÀ» ½ÃÀÛÇÕ´Ï´Ù." << endl;
 			Holdem holdem;
 
-			cout << "ì¹´ë“œë¥¼ ì„ì–´ ë°°ë¶„í•©ë‹ˆë‹¤." << endl;
+			cout << "Ä«µå¸¦ ¼¯¾î ¹èºĞÇÕ´Ï´Ù." << endl;
 			holdem.dealCard();
 
-			cout << "í™€ë¤ì„ ì‹œì‘í•©ë‹ˆë‹¤." << endl;
+			cout << "È¦´ıÀ» ½ÃÀÛÇÕ´Ï´Ù." << endl;
 			holdem.play();
-
 		}
+
 		else if (option == "3")
 		{
-			cout << "í”„ë¡œê·¸ë¨ì„ ì¢…ë£Œí•©ë‹ˆë‹¤." << endl;
+			cout << "ÇÁ·Î±×·¥À» Á¾·áÇÕ´Ï´Ù." << endl;
 			break;
 		}
 		else
 		{
-			cout << "ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤." << endl;
+			cout << "Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù." << endl;
 		}
   }
 }
