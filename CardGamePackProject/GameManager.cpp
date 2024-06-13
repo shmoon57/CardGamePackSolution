@@ -15,16 +15,15 @@ struct Card {
 
     Card(char s, int v) : suit(s), value(v) {}
 };
-
 std::map<char, int> value_map = {
-    {'2', 2}, {'3', 3}, {'4', 4}, {'5', 5}, {'6', 6}, {'7', 7}, {'8', 8}, {'9', 9}, {'T', 10}, {'J', 11}, {'Q', 12}, {'K', 13}, {'A', 14}
+    {'2', 2}, {'3', 3}, {'4', 4}, {'5', 5}, {'6', 6}, {'7', 7}, {'8', 8}, {'9', 9}, {'1', 10}, {'J', 11}, {'Q', 12}, {'K', 13}, {'A', 14}
 };
 
-vector<Card> parseCards(const vector<string>& card_strs) {
-    vector<Card> cards;
+std::vector<Card> parseCards(const std::vector<std::string>& card_strs) {
+    std::vector<Card> cards;
     for (const auto& card_str : card_strs) {
-        char suit = card_str[1];  // suit는 card_str[1]에 있음
-        int value = value_map[card_str[0]];  // value는 card_str[0]에 있음
+        char suit = card_str[0];  // suit는 card_str[1]에 있음
+        int value = value_map[card_str[1]];  // value는 card_str[0]에 있음
         cards.emplace_back(suit, value);
     }
     return cards;
@@ -58,6 +57,10 @@ bool isStraight(const std::vector<int>& unique_values, std::vector<int>& straigh
     }
 
     return false; // 스트레이트가 없으므로 false 반환
+}
+
+bool compareByValue(const Card& a, const Card& b) {
+    return a.value > b.value;
 }
 
 pair<string, vector<Card>> determineHand(const std::vector<Card>& all_cards) {
@@ -160,7 +163,6 @@ pair<string, vector<Card>> determineHand(const std::vector<Card>& all_cards) {
             unique_values.push_back(card.value);
         }
     }
-
     std::vector<int> straight_cards;
     if (isStraight(unique_values, straight_cards)) {
         std::vector<Card> straight_hand_cards;
@@ -218,16 +220,32 @@ pair<string, vector<Card>> determineHand(const std::vector<Card>& all_cards) {
     }
 
     // High Card
-    return { "High Card", std::vector<Card>(cards.end() - 5, cards.end()) };
+    vector<Card> sortedCards = cards;
+    std::sort(sortedCards.begin(), sortedCards.end(), compareByValue);
+    vector <Card> highestCard = { sortedCards[0] };
+    return { "High Card",  highestCard };
 }
 
 std::string handToString(const std::pair<std::string, std::vector<Card>>& hand) {
     std::stringstream ss;
     ss << hand.first << ": ";
     for (const auto& card : hand.second) {
-        ss << card.value << card.suit << " ";
+        std::string value_str;
+        switch (card.value) {
+        case 11: value_str = "J"; break;
+        case 12: value_str = "Q"; break;
+        case 13: value_str = "K"; break;
+        case 14: value_str = "A"; break;
+        default: value_str = std::to_string(card.value); break;
+        }
+        ss << card.suit << value_str << " ";
     }
     return ss.str();
+}
+
+void checkFinalWinner()
+{
+    
 }
 
 int GameManager::getGamePrice() { return m_gamePrice; }
@@ -247,12 +265,16 @@ string Holdem::selectWinner() {
     
     for (int j = 0; j < USERNUM; j++)
     {
+        //vector <string> testV = { "s2", "dA", "d10", "d9", "d6", "dK", "c2" };
+        //vector<Card> cards = parseCards(testV);
         vector<Card> cards = parseCards(m_totalUserCard[j]);
         pair<string, vector<Card>> result = determineHand(cards);
         string strResult = handToString(result);
         m_totalResult.push_back(strResult);
     }
     
+    checkFinalWinner();
+
     return "Holdem Winner";
 }
 
