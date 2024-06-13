@@ -103,7 +103,7 @@ pair<string, vector<Card>> determineHand(const std::vector<Card>& all_cards) {
             }
         }
     }
-
+    
     // Check for four of a kind
     for (const auto& value_count_pair : value_count) {
         int value = value_count_pair.first;
@@ -118,7 +118,7 @@ pair<string, vector<Card>> determineHand(const std::vector<Card>& all_cards) {
             return { "Four of a Kind", four_of_a_kind_cards };
         }
     }
-
+    
     // Check for full house
     int three_value = 0, pair_value = 0;
     for (const auto& value_count_pair : value_count) {
@@ -140,7 +140,7 @@ pair<string, vector<Card>> determineHand(const std::vector<Card>& all_cards) {
         }
         return { "Full House", full_house_cards };
     }
-
+    
     // Check for flush
     for (const auto& suit_count_pair : suit_count) {
         char suit = suit_count_pair.first;
@@ -155,7 +155,7 @@ pair<string, vector<Card>> determineHand(const std::vector<Card>& all_cards) {
             return { "Flush", std::vector<Card>(flush_cards.begin(), flush_cards.begin() + 5) };
         }
     }
-
+    
     // Check for straight
     std::vector<int> unique_values;
     for (const auto& card : cards) {
@@ -173,7 +173,7 @@ pair<string, vector<Card>> determineHand(const std::vector<Card>& all_cards) {
         }
         return { "Straight", straight_hand_cards };
     }
-
+    
     // Check for three of a kind
     for (const auto& value_count_pair : value_count) {
         int value = value_count_pair.first;
@@ -243,9 +243,56 @@ std::string handToString(const std::pair<std::string, std::vector<Card>>& hand) 
     return ss.str();
 }
 
-void checkFinalWinner()
+int Holdem::checkFinalWinner()
 {
-    
+    std::map<string, int> rankResult = { { "High Card", 1 }, {"One Pair", 2}, {"Two Pair", 3},
+    {"Three of a Kind", 4}, {"Straight", 5}, {"Flush", 6}, {"Full House", 7}, {"Four of a Kind", 8}, {"Straight Flush", 9}, {"Royal Flush", 10} };
+
+    // 합산 결과를 만드는 과정
+    for (string userResult : m_totalResult)
+    {
+        std::vector<std::string> tokens1;
+        std::string token1;
+        std::istringstream tokenStream1(userResult);
+        while (std::getline(tokenStream1, token1, ':')) {
+            tokens1.push_back(token1);
+        }
+        m_userRankResultVector.push_back(tokens1[0]);
+
+        // 공백기준으로 랭크 기반의 카드 벡터 만들기 ex) { "cA", "dA", "c8", "d8", "s8" }
+        std::vector<std::string> tokens2;
+        std::string token2;
+        std::istringstream tokenStream2(tokens1[1]); 
+
+        while (std::getline(tokenStream2, token2, ' ')) {
+            if (!token2.empty()) {  // 빈 문자열이 아닌 경우에만 추가
+                tokens2.push_back(token2);
+            }
+        }
+        m_userRankResultCardVector.push_back(tokens2);
+    }
+
+    // tokens1[0] 은 패의 랭크가 무엇인지? ex) 원페어, 투페어, 트리플
+    // tokens1[1] 은 해당 랭크의 카드 구성이 무엇인지? ex) "s9 d9", "d10 s10 d8 c8", "d10 s10 c10"
+
+    vector <int> userRankVector;
+    for (int i = 0; i < USERNUM; i++)
+    {
+        userRankVector.push_back(rankResult[m_userRankResultVector[i]]);
+    }
+
+    int userRankMax = 0;
+    int userMaxIdx = 0;
+    for (int i = 0; i < USERNUM; i++)
+    {
+        if (userRankVector[i] > userRankMax)
+        {
+            userRankMax = userRankVector[i];
+            userMaxIdx = i;
+        }
+    }
+
+    return userMaxIdx;
 }
 
 int GameManager::getGamePrice() { return m_gamePrice; }
@@ -273,9 +320,13 @@ string Holdem::selectWinner() {
         m_totalResult.push_back(strResult);
     }
     
-    checkFinalWinner();
+    int winnerIdx = checkFinalWinner();
 
-    return "Holdem Winner";
+    // user 인스턴스 기반으로 닉네임 가져오기
+    // 닉네임 포함한 string 벡터의 우승자 idx 접근하기
+    
+    cout << std::to_string(winnerIdx) + "번째 플레이어 우승" << endl;
+    return "0";
 }
 
 void Holdem::dealCard()
@@ -352,6 +403,7 @@ void Holdem::play()
 		// 배팅 : 프리, 퍼스트, 세컨드, 라스트
 		betting(turnNum);
 
+        // Fold 하지 않은 유저만 winner로 보여주기
 		if (turnNum == 3)
 		{
             selectWinner();
