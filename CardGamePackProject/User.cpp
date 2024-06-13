@@ -111,7 +111,7 @@ void UserDataManager::signUp() //회원가입
 		// 신규 유저인 경우
 		cout << "닉네임 : ";
 		cin >> nickname;
-		cout << "비밀번호 	: ";
+		cout << "비밀번호 : ";
 		cin >> password;
 
 		// 비밀번호 확인
