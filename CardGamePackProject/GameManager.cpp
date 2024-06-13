@@ -275,6 +275,8 @@ int Holdem::checkFinalWinner()
     // tokens1[0] 은 패의 랭크가 무엇인지? ex) 원페어, 투페어, 트리플
     // tokens1[1] 은 해당 랭크의 카드 구성이 무엇인지? ex) "s9 d9", "d10 s10 d8 c8", "d10 s10 c10"
 
+    std::map<char, int> rankCardBase = { {'2', 2}, {'3', 3}, {'4', 4}, {'5', 5}, {'6', 6}, {'7', 7}, {'8', 8}, {'9', 9}, {'1', 10}, {'J', 11}, {'Q', 12}, {'K', 13}, {'A', 14} };
+
     vector <int> userRankVector;
     for (int i = 0; i < USERNUM; i++)
     {
@@ -290,8 +292,61 @@ int Holdem::checkFinalWinner()
             userRankMax = userRankVector[i];
             userMaxIdx = i;
         }
-    }
 
+        // 랭크가 같은 경우 숫자가 더 큰 사람이 우승
+        else if (userRankVector[i] == userRankMax)
+        {
+            //High Card : 1개 값 비교
+            //One Pair : 1개 값 비교
+            //Two Pair : 2개 값 비교
+            //Triple : 1개 값 비교
+            //Straight : 1개 값 비교
+            //Flush : 1개 값 비교
+            //Full House : 2개 값 비교
+            //Four Card : 1개 값 비교
+            //Straight Flush : 1개 값 비교
+            //Royal Straight Flush : 무승부
+            vector <int> copyVector1;
+            vector <int> copyVector2;
+            int maxValueLast;
+            int maxValueC;
+            if (userRankVector[i] == 1 or userRankVector[i] == 2 or userRankVector[i] == 4 or userRankVector[i] == 5 or userRankVector[i] == 6 or userRankVector[i] == 8 or userRankVector[i] == 9)
+            {
+                for (string element1 : m_userRankResultCardVector[userMaxIdx])
+                {
+                    // 이전 까지의 최고 랭크 벡터의 가장 큰 숫자 값
+                    copyVector1.push_back(rankCardBase[element1[1]]);
+                    auto maxValue1 = max_element(copyVector1.begin(), copyVector1.end());
+                    maxValueLast = *maxValue1;
+                }
+
+                for (string element2 : m_userRankResultCardVector[i])
+                {
+                    // 확인할 최고 랭크 벡터의 가장 큰 숫자 값
+                    copyVector2.push_back(rankCardBase[element2[1]]);
+                    auto maxValue2 = max_element(copyVector2.begin(), copyVector2.end());
+                    maxValueC = *maxValue2;
+                }
+
+                if (maxValueLast < maxValueC)
+                {
+                    userRankMax = userRankVector[i];
+                    userMaxIdx = i;
+                }
+            }
+
+            else if (userRankVector[i] == 10)
+            {
+                //무승부
+                return -1;
+            }
+
+            else
+            {
+
+            }
+        }
+    }
     return userMaxIdx;
 }
 
@@ -321,7 +376,12 @@ string Holdem::selectWinner() {
     }
     
     int winnerIdx = checkFinalWinner();
-
+    
+    if (winnerIdx == -1)
+    {
+        cout << "무승부입니다!" << endl;
+        return "0";
+    }
     // user 인스턴스 기반으로 닉네임 가져오기
     // 닉네임 포함한 string 벡터의 우승자 idx 접근하기
     
