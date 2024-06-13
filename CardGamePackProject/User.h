@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <cstdlib>
+#include <conio.h> // for _getch()
 
 using namespace std;
 
@@ -15,6 +17,9 @@ public:
 	void writeUser(vector<string> userInfo); //userInfo = [ID, password, nickname, point]
 	vector<vector<string>> openUser();
 	void signUp();
+
+protected:
+	string inputPassword();
 };
 
 //로그인을 하면서 생성되는 것이 좋을 것 같음

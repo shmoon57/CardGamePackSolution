@@ -1,6 +1,5 @@
 #include "Design.h"
-
-void Design::cardDesign(string& card, int x, int y)
+void Design::cardDesign(string & card, int x, int y)
 {
     string shape = card.substr(0, 1);
     string num = card.substr(1, 1);
@@ -41,7 +40,7 @@ void Design::gotoxy(int x, int y)
 }
 
 //색상 함수
-void Design::setConsoleTextColor(WORD color) 
+void Design::setConsoleTextColor(WORD color)
 {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }
@@ -165,7 +164,7 @@ void HoldemDesign::printCommunityCard(vector<string>& communityCard, int turnNum
         drawSquare(50, 10, 10, 8);
         drawSquare(65, 10, 10, 8);
     }
-    else 
+    else
     {
         for (int i = 0; i < turnNum + 2; i++)
         {
@@ -181,8 +180,39 @@ void HoldemDesign::printCommunityCard(vector<string>& communityCard, int turnNum
             drawSquare(65, 10, 10, 8);
         }
     }
-    
+
     gotoxy(100, 20);
+}
+
+void HoldemDesign::showHoldemResult(string Nickname, vector<string>& rank, vector<vector<string>>& finalHand)
+{
+    system("cls");
+    int cardNum = 0; // 한 명의 사람이 가진 카드의 수
+    cout << "-------홀덤--------" << endl;
+    cout << "!결과 공개!" << endl;
+    for (int i = 0; i < 3; i++)
+    {
+        gotoxy(0, 4 + 10 * i);
+        if (i == 0)
+        {
+            cout << Nickname << "\n";
+        }
+        else if (i == 1)
+        {
+            cout << "Hong Jin Ho" << "\n";
+        }
+        else if (i == 2)
+        {
+            cout << "Jang Dong Min" << "\n";
+        }
+        cout << rank[i];
+        cardNum = finalHand[i].size();
+        for (int j = 0; j < cardNum; j++)
+        {
+            cardDesign(finalHand[i][j], 25 + j * 15, 3 + i * 10);
+        }
+    }
+    gotoxy(1, 32);
 }
 
 void OldMaidDesign::printJoker()
@@ -209,7 +239,7 @@ void OldMaidDesign::printJoker()
                 cout << string(letter[0].size(), ' ');
             }
         }
-       
+
         cout << endl;
     }
     setConsoleTextColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); // 기본 색상으로 복원
