@@ -40,6 +40,11 @@ void Design::gotoxy(int x, int y)
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Cur);
 }
 
+//색상 함수
+void Design::setConsoleTextColor(WORD color) 
+{
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+}
 // 수평선을 그리는 함수
 void Design::drawHorizontalLine(int x, int y, int length) {
     gotoxy(x, y);
@@ -135,10 +140,10 @@ void Design::printMyCard(vector<string>& myCard)
 
 void Design::printMyInfo(vector<string>& myInfo)
 {
-    drawSquare(50, 20, 20, 5);
-    gotoxy(52, 22);
+    drawSquare(50, 15, 20, 5);
+    gotoxy(52, 17);
     cout << myInfo[2];
-    gotoxy(52, 23);
+    gotoxy(52, 18);
     cout << myInfo[3];
 
     gotoxy(100, 30);
@@ -178,4 +183,84 @@ void HoldemDesign::printCommunityCard(vector<string>& communityCard, int turnNum
     }
     
     gotoxy(100, 20);
+}
+
+void OldMaidDesign::printJoker()
+{
+    vector<vector<string>> letters = { getJ(), getO(), getK(), getE(), getR() };
+
+    // Determine the maximum height of the letters
+    size_t max_height = 0;
+    for (const auto& letter : letters) {
+        if (letter.size() > max_height) {
+            max_height = letter.size();
+        }
+    }
+    setConsoleTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY); // 빨간색 설정
+    // Print each row of the combined letters
+    for (size_t row = 0; row < max_height; ++row) {
+        gotoxy(50, 7 + row);
+        for (const auto& letter : letters) {
+            if (row < letter.size()) {
+                cout << letter[row];
+            }
+            else {
+                // If the letter is shorter than the maximum height, print spaces
+                cout << string(letter[0].size(), ' ');
+            }
+        }
+       
+        cout << endl;
+    }
+    setConsoleTextColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); // 기본 색상으로 복원
+}
+
+vector<string> OldMaidDesign::getJ() {
+    return {
+        " ***** ",
+        "   *   ",
+        "   *   ",
+        "*  *   ",
+        " ***   "
+    };
+}
+
+vector<string> OldMaidDesign::getO() {
+    return {
+        " ***  ",
+        "*   * ",
+        "*   * ",
+        "*   * ",
+        " ***  "
+    };
+}
+
+vector<string> OldMaidDesign::getK() {
+    return {
+        "*   * ",
+        "*  *  ",
+        "***   ",
+        "*  *  ",
+        "*   * "
+    };
+}
+
+vector<string> OldMaidDesign::getE() {
+    return {
+        "***** ",
+        "*     ",
+        "***** ",
+        "*     ",
+        "***** "
+    };
+}
+
+vector<string> OldMaidDesign::getR() {
+    return {
+        "****  ",
+        "*   * ",
+        "****  ",
+        "*  *  ",
+        "*   * "
+    };
 }
