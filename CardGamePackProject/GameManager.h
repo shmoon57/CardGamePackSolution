@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+
+#include "User.h"
 #include "CardDeck.h"
 
 using namespace std;
@@ -33,14 +35,15 @@ protected:
 class Holdem : public GameManager
 {
 public:
-	Holdem() { m_gameType = 2; m_gamePrice = 0; m_gameCnt = 0;  m_activePlayerNum = 0; m_sumBettingPoint = 0; }
+	Holdem() { m_gameType = 2; m_gamePrice = 5000; m_bettingPoint = 0; m_gameCnt = 0;  m_activePlayerNum = 0; m_sumBettingPoint = 0; }
 	string selectWinner() override;
 	void dealCard() override;
-	void play();
+	void play(User &user);
 	int checkFinalWinner();
 
 private:
-	void betting(int turnNum);
+	int m_bettingPoint;
+	bool betting(int turnNum);
 	int m_gameCnt;
 	int m_activePlayerNum;
 	int m_sumBettingPoint;

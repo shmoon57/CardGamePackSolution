@@ -271,8 +271,8 @@ void User::setNickname(string Nickname)
 	this->m_nickname = Nickname;
 }
 
-void User::setGamePoint(string gainedPoint)
+void User::setGamePoint(string gamePoint)
 {
-	this->m_gamePoint = to_string(stoi(m_gamePoint) + stoi(gainedPoint));
+	this->m_gamePoint = gamePoint;
 }
 

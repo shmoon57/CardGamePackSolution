@@ -467,7 +467,62 @@ int Holdem::checkFinalWinner()
 
             else
             {
+                //2개 값 비교
+                for (string element1 : m_userRankResultCardVector[userMaxIdx])
+                {
+                    // 이전 까지의 최고 랭크 벡터의 가장 큰 숫자 값
+                    copyVector1.push_back(rankCardBase[element1[1]]);
+                    auto maxValue1 = max_element(copyVector1.begin(), copyVector1.end());
+                    maxValueLast = *maxValue1;
+                }
 
+                for (string element2 : m_userRankResultCardVector[i])
+                {
+                    // 확인할 최고 랭크 벡터의 가장 큰 숫자 값
+                    copyVector2.push_back(rankCardBase[element2[1]]);
+                    auto maxValue2 = max_element(copyVector2.begin(), copyVector2.end());
+                    maxValueC = *maxValue2;
+                }
+
+                if (maxValueLast < maxValueC)
+                {
+                    userRankMax = userRankVector[i];
+                    userMaxIdx = i;
+                }
+
+                else if (maxValueLast == maxValueC)
+                {
+                    int maxValueLast;
+                    int maxValueC;
+                    copyVector1.erase(std::remove(copyVector1.begin(), copyVector1.end(), maxValueLast), copyVector1.end());
+                    copyVector2.erase(std::remove(copyVector2.begin(), copyVector2.end(), maxValueLast), copyVector2.end());
+                    for (string element1 : m_userRankResultCardVector[userMaxIdx])
+                    {
+                        // 이전 까지의 최고 랭크 벡터의 가장 큰 숫자 값
+                        copyVector1.push_back(rankCardBase[element1[1]]);
+                        auto maxValue1 = max_element(copyVector1.begin(), copyVector1.end());
+                        maxValueLast = *maxValue1;
+                    }
+
+                    for (string element2 : m_userRankResultCardVector[i])
+                    {
+                        // 확인할 최고 랭크 벡터의 가장 큰 숫자 값
+                        copyVector2.push_back(rankCardBase[element2[1]]);
+                        auto maxValue2 = max_element(copyVector2.begin(), copyVector2.end());
+                        maxValueC = *maxValue2;
+                    }
+
+                    if (maxValueLast < maxValueC)
+                    {
+                        userRankMax = userRankVector[i];
+                        userMaxIdx = i;
+                    }
+
+                    else if (maxValueLast == maxValueC)
+                    {
+                        return -1;
+                    }
+                }
             }
         }
     }
@@ -477,6 +532,217 @@ int Holdem::checkFinalWinner()
 int GameManager::getGamePrice() { return m_gamePrice; }
 
 void GameManager::setGamePrice(int price) { m_gamePrice = price; }
+
+// Holdem 클래스 함수 정의
+string Holdem::selectWinner() {
+    // 홀덤 게임의 승자 선택 로직 구현
+    for (int i = 0; i < USERNUM; i++)
+    {
+        for (string fieldCard : m_fieldCard)
+        {
+            m_totalUserCard[i].push_back(fieldCard);
+        }
+    }
+
+    for (int j = 0; j < USERNUM; j++)
+    {
+        //vector <string> testV = { "s2", "dA", "d10", "d9", "d6", "dK", "c2" };
+        //vector<Card> cards = parseCards(testV);
+        vector<Card> cards = parseCards(m_totalUserCard[j]);
+        pair<string, vector<Card>> result = determineHand(cards);
+        string strResult = handToString(result);
+        m_totalResult.push_back(strResult);
+    }
+
+    int winnerIdx = checkFinalWinner();
+
+    if (winnerIdx == -1)
+    {
+        return "0";
+    }
+    // user 인스턴스 기반으로 닉네임 가져오기
+    // 닉네임 포함한 string 벡터의 우승자 idx 접근하기
+
+    cout << std::to_string(winnerIdx) + "번째 플레이어 우승" << endl;
+    return std::to_string(winnerIdx);
+}
+
+void Holdem::dealCard()
+{
+    // 홀덤 게임의 카드 배분 로직 구현
+    //카드 덱 생성
+    CardDeck card(2); //홀덤 option == 2
+
+    //카드 섞기 및 카드 벡터 가져오기
+    card.suffleCards();
+    vector<string> cardVector = card.getCardVector();
+
+    ////랜덤하게 필드카드 5장 가져오고 기존 cardVector에서 값 빼기
+    //랜덤 엔진 초기화
+    random_device rd;
+    mt19937 g(rd());
+
+    //벡터 인덱스
+    vector<int> indices(cardVector.size());
+    iota(indices.begin(), indices.end(), 0);
+
+    //인덱스 무작위 섞기
+    shuffle(indices.begin(), indices.end(), g);
+
+    //무작위 5개의 인덱스 벡터 생성
+    vector<int> selected_indices(indices.begin(), indices.begin() + 5);
+
+    //필드에 있을 5개 카드 벡터 생성
+    vector<string> fieldCard;
+    for (int index : selected_indices) {
+        fieldCard.push_back(cardVector[index]);
+    }
+
+    //뽑은 5개의 카드를 기존의 cardVector에서 제거
+    sort(selected_indices.rbegin(), selected_indices.rend());
+    for (int index : selected_indices) {
+        cardVector.erase(cardVector.begin() + index);
+    }
+
+    ////나머지 cardVector에서 랜덤하게 2장씩 가져와 usersCard에 넣기
+    vector<vector <string>> usersCard(USERNUM);
+
+    for (int i = 0; i < USERNUM; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
+            usersCard[i].push_back(cardVector.back());
+            cardVector.pop_back();
+        }
+    }
+
+    m_fieldCard = fieldCard;
+    m_totalUserCard = usersCard;
+}
+
+bool Holdem::betting(int turnNum)
+{
+    int bettingOption;
+    cout << endl << "배팅 선택" << endl;
+    cout << "0 : Call | 1 : Raise | 2 : Fold -> ";
+    cin >> bettingOption;
+
+    vector <int> bettingResultVector;
+    
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dis(1, 10);
+    if (dis(gen) < 6)
+    {
+        bettingResultVector.push_back(0);
+    }
+
+    else
+    {
+        bettingResultVector.push_back(1);
+    }
+
+    if (bettingOption == 0)
+    {
+        bettingResultVector.push_back(0);
+    }
+
+    else if (bettingOption == 1)
+    {
+        bettingResultVector.push_back(1);
+    }
+
+    else if (bettingOption == 2)
+    {
+        bettingResultVector.push_back(2);
+    }
+
+    for (int bettingResult : bettingResultVector)
+    {
+        if (bettingResult == 0)
+        {
+            m_sumBettingPoint += m_gamePrice;
+        }
+
+        else if (bettingResult == 1)
+        {
+            m_gamePrice = m_gamePrice * 2;
+            m_sumBettingPoint += m_gamePrice;
+        }
+
+        else if (bettingResult == 2)
+        {
+            cout << "Fold 하셨습니다. 모두의 패를 공개합니다.";
+            return true;
+        }
+    }
+    return false;
+}
+
+void Holdem::play(User &user)
+{
+    Design design;
+    vector <string> myInfo;
+    myInfo.push_back(user.getNickname());
+    myInfo.push_back(user.getGamePoint());
+    design.printMyInfo(myInfo);
+
+    int turnNum = 0;
+    HoldemDesign holdemDesign;
+    // 유저 본인 카드 받기
+    holdemDesign.printMyCard(m_totalUserCard[0]);
+    bool isFold = false;
+    while (true)
+    {
+        // n번째턴 : 0/5 -> 3/5 -> 4/5 -> 5/5
+        holdemDesign.printCommunityCard(m_fieldCard, turnNum);
+        // 배팅 : 프리, 퍼스트, 세컨드, 라스트
+        isFold = betting(turnNum);
+        if (isFold)
+        {
+            system("cls");
+            holdemDesign.showHoldemResult(user.getNickname(), m_userRankResultVector, m_userRankResultCardVector);
+            break;
+        }
+        //포인트 셋 하기
+        int point = stoi(user.getGamePoint()) - m_gamePrice;
+        m_bettingPoint += point;
+        user.setGamePoint(to_string(point));
+        myInfo.pop_back();
+        myInfo.push_back(user.getGamePoint());
+        design.printMyInfo(myInfo);
+
+        // Fold 하지 않은 유저만 winner로 보여주기
+        if (turnNum == 3)
+        {
+            string winnerIdx = selectWinner();
+            if (winnerIdx == "0")
+            {
+                system("cls");
+                holdemDesign.showHoldemResult(user.getNickname(), m_userRankResultVector, m_userRankResultCardVector);
+                cout << "축하합니다! " << m_sumBettingPoint << " 만큼의 포인트를 얻었습니다." << endl;
+                user.setGamePoint(to_string(stoi(user.getGamePoint()) + m_sumBettingPoint));
+                myInfo.pop_back();
+                myInfo.push_back(user.getGamePoint());
+                design.printMyInfo(myInfo);
+            }
+
+            else if (winnerIdx == "-1")
+            {
+                system("cls");
+                holdemDesign.showHoldemResult(user.getNickname(), m_userRankResultVector, m_userRankResultCardVector);
+                cout << "무승부입니다! 베팅한 포인트를 돌려드립니다." << endl;
+                user.setGamePoint(to_string(m_bettingPoint));
+                myInfo.pop_back();
+                myInfo.push_back(user.getGamePoint());
+                design.printMyInfo(myInfo);
+            }
+            break;
+        }
+
+        turnNum++;
+    }
+}
 
 // OldMaid 클래스 함수 정의
 // 도둑잡기 게임의 카드 배분 로직 구현 
