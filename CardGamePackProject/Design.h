@@ -7,11 +7,11 @@ using namespace std;
 class Design
 {
 public:
+	void gotoxy(int x, int y);
 	void printMyCard(vector<string>& myCard);
 	void printMyInfo(vector<string>& myInfo);
 protected:
 	void cardDesign(string& card, int x, int y);
-	void gotoxy(int x, int y);
 	void setConsoleTextColor(WORD color);
 	void drawHorizontalLine(int x, int y, int length);
 	void drawVerticalLine(int x, int y, int length);
