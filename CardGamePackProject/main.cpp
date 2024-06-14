@@ -63,7 +63,7 @@ int main()
 			holdem.dealCard();
 
 			cout << "È¦´ıÀ» ½ÃÀÛÇÕ´Ï´Ù." << endl;
-			holdem.play();
+			holdem.play(user);
 		}
 
 		else if (option == "3")
