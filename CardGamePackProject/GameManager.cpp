@@ -442,6 +442,8 @@ string Holdem::selectWinner() {
     // user 인스턴스 기반으로 닉네임 가져오기
     // 닉네임 포함한 string 벡터의 우승자 idx 접근하기
 
+    HoldemDesign holdemDesign;
+    holdemDesign.gotoxy(1, 32);
     cout << std::to_string(winnerIdx) + "번째 플레이어 우승" << endl;
     return std::to_string(winnerIdx);
 }
@@ -577,12 +579,15 @@ void Holdem::play(User &user)
         holdemDesign.printCommunityCard(m_fieldCard, turnNum);
         // 배팅 : 프리, 퍼스트, 세컨드, 라스트
         isFold = betting(turnNum);
+
+        //Fold 한 경우
         if (isFold)
         {
             system("cls");
             holdemDesign.showHoldemResult(user.getNickname(), m_userRankResultVector, m_userRankResultCardVector);
             break;
         }
+
         //포인트 셋 하기
         int point = stoi(user.getGamePoint()) - m_gamePrice;
         m_bettingPoint += point;
@@ -595,6 +600,19 @@ void Holdem::play(User &user)
         if (turnNum == 3)
         {
             string winnerIdx = selectWinner();
+            //무승부인 경우
+            if (winnerIdx == "-1")
+            {
+                system("cls");
+                holdemDesign.showHoldemResult(user.getNickname(), m_userRankResultVector, m_userRankResultCardVector);
+                cout << "무승부입니다! 베팅한 포인트를 돌려드립니다." << endl;
+                user.setGamePoint(to_string(m_bettingPoint));
+                myInfo.pop_back();
+                myInfo.push_back(user.getGamePoint());
+                design.printMyInfo(myInfo);
+                break;
+            }
+            
             if (winnerIdx == "0")
             {
                 system("cls");
@@ -604,18 +622,14 @@ void Holdem::play(User &user)
                 myInfo.pop_back();
                 myInfo.push_back(user.getGamePoint());
                 design.printMyInfo(myInfo);
+                break;
             }
 
-            else if (winnerIdx == "-1")
-            {
-                system("cls");
-                holdemDesign.showHoldemResult(user.getNickname(), m_userRankResultVector, m_userRankResultCardVector);
-                cout << "무승부입니다! 베팅한 포인트를 돌려드립니다." << endl;
-                user.setGamePoint(to_string(m_bettingPoint));
-                myInfo.pop_back();
-                myInfo.push_back(user.getGamePoint());
-                design.printMyInfo(myInfo);
-            }
+            system("cls");
+            holdemDesign.showHoldemResult(user.getNickname(), m_userRankResultVector, m_userRankResultCardVector);
+            myInfo.pop_back();
+            myInfo.push_back(user.getGamePoint());
+            design.printMyInfo(myInfo);
             break;
         }
 
