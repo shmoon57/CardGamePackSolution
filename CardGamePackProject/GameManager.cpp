@@ -1168,9 +1168,6 @@ void OldMaid::play(User& user)
   //myInfo.push_back(user.getNickname());
   //myInfo.push_back(user.getGamePoint());
   //design.printMyInfo(myInfo);
-  players.push_back(user.getNickname());
-  players.push_back("player2");
-  players.push_back("player3");
 
   OldMaidDesign oldMaidDesign;
   
