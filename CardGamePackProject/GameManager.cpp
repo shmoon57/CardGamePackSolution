@@ -753,12 +753,12 @@ void OldMaid::printSelectRoutine()
 
 vector<string>& OldMaid::getPlayerCards(const string& player)
 {
-    if (player == "player1")
+    if (player == players[0])
     {
         return player1Cards;
     }
 
-    if (player == "player2")
+    if (player == players[1])
     {
         return player2Cards;
     }
@@ -814,7 +814,7 @@ void OldMaid::pickCard(int RandomPickOrderIdx)
 
   else
   {
-    if (playerOrder[RandomPickOrderIdx] == "player1")
+    if (playerOrder[RandomPickOrderIdx] == players[0])
     {
       selfPickCard(RandomPickOrderIdx, playerOrder.size());
     }
@@ -1130,10 +1130,13 @@ string OldMaid::selectWinner()
 void OldMaid::play(User& user)
 {
   Design design;
-  vector<string> myInfo;
-  myInfo.push_back(user.getNickname());
-  myInfo.push_back(user.getGamePoint());
+  //vector<string> myInfo;
+  //myInfo.push_back(user.getNickname());
+  //myInfo.push_back(user.getGamePoint());
   //design.printMyInfo(myInfo);
+  players.push_back(user.getNickname());
+  players.push_back("player2");
+  players.push_back("player3");
 
   OldMaidDesign oldMaidDesign;
   
@@ -1168,7 +1171,7 @@ void OldMaid::play(User& user)
   this_thread::sleep_for(chrono::seconds(2));
 
   // 여기 화면에 초기화 안됨 -> How to?
-  oldMaidDesign.printCardNum(user.getNickname(), printDeckNum);
+  //oldMaidDesign.printCardNum(user.getNickname(), printDeckNum);
   oldMaidDesign.oldMaidPrintMyCard(player1Cards);
 
   this_thread::sleep_for(chrono::seconds(2));
@@ -1193,7 +1196,7 @@ void OldMaid::play(User& user)
         oldMaidDesign.printJoker();
       }
     }
-    //oldMaidDesign.printCardNum(user.getNickname(), printDeckNum);
+    oldMaidDesign.printCardNum(user.getNickname(), printDeckNum);
     oldMaidDesign.oldMaidPrintMyCard(player1Cards);
 
     selectRoutine();
