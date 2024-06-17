@@ -110,7 +110,7 @@ void Design::printMyCard(vector<string>& myCard)
     cout << "------my Card-----";
 
     gotoxy(50, 4);
-    cout << "| ♠ | ";
+    cout << "|  | ";
     for (int i = 0; i < spade.size(); i++)
     {
         cout << spade[i] << " ";
@@ -254,27 +254,22 @@ void OldMaidDesign::printJoker()
     gotoxy(originalPos.X, originalPos.Y);
 }
 
-void OldMaidDesign::printCardNum(string nickname, vector<int>& cardNum)
+void OldMaidDesign::printCardNum(string nickname, vector<int>& cardNum, vector <string> nickNameVector)
 {   
     // 현재 커서 위치 저장
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
     COORD originalPos = csbi.dwCursorPosition;
     
+    vector <string> nickVec = { nickname, "Hong Jin Ho", "Jand Dong Min" };
+
     gotoxy(90, 1);
     cout << "------- 남은 카드 개수 -------\n";
     for (int i = 0; i < 3; i++)
     {
         gotoxy(90, 2 + i);
-        if (i == 0)
-        {
-            cout << nickname << "의 카드 수 : " << cardNum[i];
-        }
-        else
-        {
-            cout << i + 1 << "번째 player의 카드 수 : " << cardNum[i];
-        } 
-        cout << endl;
+
+        cout << nickVec[i] << "님의 카드 수 : " << cardNum[i] << endl;
     }
     
     // 원래 위치로 커서 이동
@@ -399,7 +394,7 @@ void OldMaidDesign::oldMaidPrintMyCard(vector<string>& myCard)
   gotoxy(originalPos.X, originalPos.Y);
 }
 
-void OldMaidDesign::printSelectRoutine(vector<string>& playerTurn)
+void OldMaidDesign::printSelectRoutine(vector<string>& playerTurn, vector<string>& nickNameVector)
 {
   CONSOLE_SCREEN_BUFFER_INFO csbi;
   GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
@@ -412,7 +407,7 @@ void OldMaidDesign::printSelectRoutine(vector<string>& playerTurn)
   for (int i = 0; i < playerTurn.size(); ++i)
   {
     gotoxy(90, 7 + i);
-    cout << (i + 1) << "번째 : " << playerTurn[i] << "\n";
+    cout << (i + 1) << "번째 : " << nickNameVector[i] << "\n";
   };
   
   gotoxy(originalPos.X, originalPos.Y);

@@ -28,9 +28,9 @@ class OldMaidDesign : public Design
 {
 public:
 	void printJoker();
-	void printCardNum(string nickname, vector<int>& cardNum);
+	void printCardNum(string nickname, vector<int>& cardNum, vector <string> nickNameVector);
 	void oldMaidPrintMyCard(vector<string>& myCard);
-	void printSelectRoutine(vector<string>& playerTurnInfo);
+	void printSelectRoutine(vector<string>& playerTurnInfo, vector<string>& nickNameVector);
 	void getGamePointInfo();
 private:
 	vector<string> getJ();
