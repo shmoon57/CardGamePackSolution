@@ -54,7 +54,11 @@ int main()
 		{
 			system("cls");
 			//도둑잡기
-			cout << "도둑잡기를 시작합니다." << endl;
+			OldMaid game1;
+			game1.play(user);
+
+			continue;
+
 		}
 		else if (option == "2")
 		{

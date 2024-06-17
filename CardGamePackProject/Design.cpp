@@ -218,6 +218,12 @@ void HoldemDesign::showHoldemResult(string Nickname, vector<string>& rank, vecto
 
 void OldMaidDesign::printJoker()
 {
+    
+    // 현재 커서 위치 저장
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    COORD originalPos = csbi.dwCursorPosition;
+
     vector<vector<string>> letters = { getJ(), getO(), getK(), getE(), getR() };
 
     // Determine the maximum height of the letters
@@ -244,14 +250,22 @@ void OldMaidDesign::printJoker()
         cout << endl;
     }
     setConsoleTextColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); // 기본 색상으로 복원
+    // 원래 위치로 커서 이동
+    gotoxy(originalPos.X, originalPos.Y);
 }
 
 void OldMaidDesign::printCardNum(string nickname, vector<int>& cardNum)
-{
-    //drawSquare(1, 3, 30, 5);
+{   
+    // 현재 커서 위치 저장
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    COORD originalPos = csbi.dwCursorPosition;
+    
+    gotoxy(90, 1);
+    cout << "------- 남은 카드 개수 -------\n";
     for (int i = 0; i < 3; i++)
     {
-        gotoxy(2, 4 + i);
+        gotoxy(90, 2 + i);
         if (i == 0)
         {
             cout << nickname << "의 카드 수 : " << cardNum[i];
@@ -259,8 +273,12 @@ void OldMaidDesign::printCardNum(string nickname, vector<int>& cardNum)
         else
         {
             cout << i + 1 << "번째 player의 카드 수 : " << cardNum[i];
-        }
+        } 
+        cout << endl;
     }
+    
+    // 원래 위치로 커서 이동
+    gotoxy(originalPos.X, originalPos.Y);
 
 }
 
@@ -313,4 +331,120 @@ vector<string> OldMaidDesign::getR() {
         "*  *  ",
         "*   * "
     };
+}
+
+
+void OldMaidDesign::oldMaidPrintMyCard(vector<string>& myCard)
+{
+  // 현재 커서 위치 저장
+  CONSOLE_SCREEN_BUFFER_INFO csbi;
+  GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+  COORD originalPos = csbi.dwCursorPosition;
+
+  vector<string> spade, diamond, heart, clover;
+  int myCardSize = myCard.size();
+  for (int i = 0; i < myCardSize; i++)
+  {
+    string shape = myCard[i].substr(0, 1);
+    string num = myCard[i].substr(1, 1);
+    if (shape == "s")
+    {
+      spade.push_back(num);
+    }
+    else if (shape == "d")
+    {
+      diamond.push_back(num);
+    }
+    else if (shape == "h")
+    {
+      heart.push_back(num);
+    }
+    else if (shape == "c")
+    {
+      clover.push_back(num);
+    }
+  }
+  gotoxy(50, 3);
+  cout << "------my Card-----";
+
+  gotoxy(50, 4);
+  cout << "| ♠ | ";
+  for (int i = 0; i < spade.size(); i++)
+  {
+    cout << spade[i] << " ";
+  }
+
+  gotoxy(50, 5);
+  cout << "| ◆ | ";
+  for (int i = 0; i < diamond.size(); i++)
+  {
+    cout << diamond[i] << " ";
+  }
+
+  gotoxy(50, 6);
+  cout << "| ♥ | ";
+  for (int i = 0; i < heart.size(); i++)
+  {
+    cout << heart[i] << " ";
+  }
+
+  gotoxy(50, 7);
+  cout << "| ♣ | ";
+  for (int i = 0; i < clover.size(); i++)
+  {
+    cout << clover[i] << " ";
+  }
+
+  // 원래 위치로 커서 이동
+  gotoxy(originalPos.X, originalPos.Y);
+}
+
+void OldMaidDesign::printSelectRoutine(vector<string>& playerTurn)
+{
+  CONSOLE_SCREEN_BUFFER_INFO csbi;
+  GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+  COORD originalPos = csbi.dwCursorPosition;
+
+  gotoxy(90, 6);
+
+  
+  cout << "------- 플레이어 순서 -------\n";
+  for (int i = 0; i < playerTurn.size(); ++i)
+  {
+    gotoxy(90, 7 + i);
+    cout << (i + 1) << "번째 : " << playerTurn[i] << "\n";
+  };
+  
+  gotoxy(originalPos.X, originalPos.Y);
+
+}
+
+void OldMaidDesign::getGamePointInfo()
+{
+  // 현재 커서 위치 저장
+  CONSOLE_SCREEN_BUFFER_INFO csbi;
+  GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+  COORD originalPos = csbi.dwCursorPosition;
+
+  gotoxy(90, 3);
+  cout << "------- 포인트 획득 정보 -------\n";
+  /*
+  for (int i = 0; i < 3; i++)
+  {
+    gotoxy(90, 5 + i);
+    if (i == 0)
+    {
+      cout << nickname << "의 카드 수 : " << cardNum[i];
+    }
+    else
+    {
+      cout << i + 1 << "번째 player의 카드 수 : " << cardNum[i];
+    }
+    cout << endl;
+  }
+  */
+
+  // 원래 위치로 커서 이동
+  gotoxy(originalPos.X, originalPos.Y);
+
 }

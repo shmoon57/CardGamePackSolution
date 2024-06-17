@@ -11,6 +11,8 @@
 #include "User.h"
 #include "CardDeck.h"
 
+#include <thread> // for Delay
+
 using namespace std;
 
 class GameManager
@@ -59,6 +61,7 @@ class OldMaid : public GameManager
 
 public:
 
+	void play(User& user);
 	void dealCard() override;
 	// 중복 제거 함수
 	void removeDuplicates(vector<string>& playerCards);
@@ -67,33 +70,34 @@ public:
 	void selectRoutine();
 	void printSelectRoutine();
 	// 상대방 카드를 얻는 함수 pickCard()위함
-	vector<string>& getPlayerCards(string& player);
-	void pickCard();
-	string determineWinner();
+	vector<string>& getPlayerCards(const string& player);
+	void pickCard(int RandomPickOrder);
+	void autoPickCard(int RandomPickOrder, int playerVectorSize, string& currentPlayer);
+	void selfPickCard(int RandomPickOrder, int playerVectorSize);
 	string selectWinner() override;
-	int getGameRound();
-	void showWinner();
-	// 개수 출력 벡터 만들기(int)
-	void clearScreen();
+	int getPickNum();
+	void showZeroCnt();
+	void printPlayerDeck();
+	int getZeroCnt();
+	bool isWin();
 
-	// 지울 예정
-	int getzeroCnt();
+	vector <int> printDeckNum;
 	vector<string>& getPlayer1Cards() { return player1Cards; }
 	vector<string>& getPlayer2Cards() { return player2Cards; }
 	vector<string>& getPlayer3Cards() { return player3Cards; }
-
 
 	// 카드 셔플 후 플레이어 1,2,3 각각 해당 받을 카드 벡터 선언
 	vector<string> player1Cards;
 	vector<string> player2Cards;
 	vector<string> player3Cards;
 
+	void printJkInMyDeck();
 
 private:
-
-	int m_gameRound = 1;
+	int m_pickNum = 1;
 	int m_zeroCnt = 0;
 	vector<string> players = { "player1", "player2" , "player3" };
 	vector<string> playerOrder;
+	vector<string> finishedPlayers;
 
 };

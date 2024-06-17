@@ -12,6 +12,9 @@
 
 #define USERNUM 3
 
+
+
+
 struct Card {
     char suit;  // 's', 'd', 'h', 'c'
     int value;  // 2-10, 11 (J), 12 (Q), 13 (K), 14 (A)
@@ -669,6 +672,32 @@ void OldMaid::dealCard()
         player3Cards.push_back(m_cardVector[cardIndex]);
         cardIndex++;
     }
+
+    printDeckNum = { (int)player1Cards.size(), (int)player2Cards.size(), (int)player3Cards.size() };
+
+}
+
+// 플레이어 별 카드 상황 표현
+// 지울 예정
+void OldMaid::printPlayerDeck()
+{
+	  cout << "Player 1 Cards: ";
+	  for (const string& card : getPlayer1Cards()) {
+		cout << card << " ";
+	  }
+	  cout << endl;
+
+	  cout << "Player 2 Cards: ";
+	  for (const string& card : getPlayer2Cards()) {
+		cout << card << " ";
+	  }
+	  cout << endl;
+
+	  cout << "Player 3 Cards: ";
+	  for (const string& card : getPlayer3Cards()) {
+		  cout << card << " ";
+	  }
+	  cout << endl << endl;
 }
 
 void OldMaid::removeDuplicates(vector<string>& playerCards)
@@ -686,17 +715,9 @@ void OldMaid::removeDuplicates(vector<string>& playerCards)
             }
         }
     }
+     
     // remove() : 비어 있는 요소들을 벡터의 뒤쪽으로 이동시키고, 새로운 끝 반복자를 반환
     playerCards.erase(remove(playerCards.begin(), playerCards.end(), "00"), playerCards.end());
-
-    // 현재 플레이어의 카드가 비어 있는지 확인하고, 비어 있다면 m_zeroCnt 증가
-    // 첫 오류_sh
-    // cout << "..............vector size : " << playerCards.size() << "..............." << endl;
-    /*if (playerCards.empty())
-    {
-        m_zeroCnt++;
-        cout << "..............m_zeroCnt = " << m_zeroCnt << "..............." << endl;
-    }*/
 }
 
 void OldMaid::disCard()
@@ -704,12 +725,12 @@ void OldMaid::disCard()
     removeDuplicates(player1Cards);
     removeDuplicates(player2Cards);
     removeDuplicates(player3Cards);
+
+    printDeckNum = { (int)player1Cards.size(), (int)player2Cards.size(), (int)player3Cards.size() };
 }
 
 void OldMaid::selectRoutine()
 {
-    cout << "제비뽑기로 순서를 정합니다!\n";
-
     // 현재 시간을 시드로 사용하여 무작위성을 증가
     srand(time(0));
 
@@ -730,7 +751,7 @@ void OldMaid::printSelectRoutine()
     };
 }
 
-vector<string>& OldMaid::getPlayerCards(string& player)
+vector<string>& OldMaid::getPlayerCards(const string& player)
 {
     if (player == "player1")
     {
@@ -748,147 +769,505 @@ vector<string>& OldMaid::getPlayerCards(string& player)
     }
 }
 
-void OldMaid::showWinner()
+void OldMaid::showZeroCnt()
 {
     cout << endl << "------------showWinner-----------" << endl;
     cout << "Player1 card size : " << this->player1Cards.size() << endl;
     cout << "Player2 card size : " << this->player2Cards.size() << endl;
     cout << "Player3 card size : " << this->player3Cards.size() << endl << endl;
 
-    if (this->player1Cards.size() == 0 ||
-        this->player2Cards.size() == 0 ||
-        this->player3Cards.size() == 0)
-    {
-        m_zeroCnt++;
-        cout << "-------m_zeroCnt : " << m_zeroCnt << "-----------" << endl;
-    }
 }
 
-// 1턴 기준 상대방 카드를 임의로 뽑기
-void OldMaid::pickCard()
+// RandomPickOrder : main 문 에서 i
+/*
+1. pickNum++ -> 라운드 표현
+2 - 1)카드가 있으면 self/auto pick 결정
+2 - 2)카드 없다는 메시지 출력
+3. 플레이어 카드 수 확인하며 카드 수 0이면 ++
+*/
+
+void OldMaid::pickCard(int RandomPickOrderIdx)
 {
-    // debug
-    cout << "..............pickCard()............" << endl;
+  m_pickNum++;
 
-    // 플레이어들이 순서대로 카드를 뽑기 시작합니다.
-    for (int i = 0; i < playerOrder.size(); i++)
+  // playerOrder = {player3, player1, player2}
+  string currentPlayerName = playerOrder[RandomPickOrderIdx].substr(6, 1);
+  int sizeofPlayerCard = -1;
+
+  if (currentPlayerName == "1")
+  {
+    sizeofPlayerCard = player1Cards.size();
+  }
+  else if (currentPlayerName == "2")
+  {
+    sizeofPlayerCard = player2Cards.size();
+  }
+  else if (currentPlayerName == "3")
+  {
+    sizeofPlayerCard = player3Cards.size();
+  }
+
+  if (sizeofPlayerCard == 0)
+  {
+    cout << "player의 카드 개수는 0 입니다. 다음 player가 카드를 뽑습니다.\n";
+  }
+
+  else
+  {
+    if (playerOrder[RandomPickOrderIdx] == "player1")
     {
-        // 현재 순서의 플레이어
-        string& currentPlayer = playerOrder[i];
+      selfPickCard(RandomPickOrderIdx, playerOrder.size());
+    }
+    else
+    {
+      autoPickCard(RandomPickOrderIdx, playerOrder.size(), playerOrder[RandomPickOrderIdx]);
+    }
 
-        // 다음 순서의 플레이어
-        string& nextPlayer = playerOrder[(i + 1) % playerOrder.size()];
+  }
 
+  // 한라운드씩 실행되므로 초기화 필요
+  m_zeroCnt = 0;
 
-        cout << currentPlayer << "의 차례입니다.\n";
+  if (player1Cards.size() == 0)
+  {
+    m_zeroCnt++;
+  }
+  if (player2Cards.size() == 0)
+  {
+    m_zeroCnt++;
+  }
+  if (player3Cards.size() == 0)
+  {
+    m_zeroCnt++;
+  }
 
-        // 다음 순서의 플레이어 카드 목록을 참조로 가져옵니다.
-        vector<string>& nextPlayerCards = getPlayerCards(nextPlayer);
+}
+//selfPickCard(RandomPickOrder, playerOrder.size())
+void OldMaid::selfPickCard(int RandomPickOrderIdx, int playerVectorSize)
+{
+  // player1이 카드를 뽑을 타겟 인덱스
+  int targetIdx;
+  string targetPlayer;
 
-        // 다음 순서의 플레이어가 더 이상 카드를 가지고 있지 않은 경우
-        if (nextPlayerCards.empty())
+  // targetIdx 결정 loop
+  while (true)
+  {
+    // 타겟 인덱스 정하기 : 플레이어 3명인 경우
+    if (playerVectorSize == 3)
+    {
+      // 내가 마지막 순서이면
+      if (RandomPickOrderIdx == 2)
+      {
+        targetIdx = 0;
+      }
+
+      // 내가 마지막 순서가 아니면
+      else
+      {
+        targetIdx = RandomPickOrderIdx + 1;
+      }
+    }
+
+    // 타겟 인덱스 정하기 : 플레이어 2명인 경우
+    else if (playerVectorSize == 2)
+    {
+
+      // 기존에 두번째 순서였던 경우
+      if (RandomPickOrderIdx == 1)
+      {
+        if (playerOrder[targetIdx] != "player1")
         {
-            cout << nextPlayer << "는 더 이상 카드를 가지고 있지 않습니다.\n";
-            continue;
+          // autoPick 가야함; playerOrder[RandomPickOrder])
+          autoPickCard(RandomPickOrderIdx, playerVectorSize, playerOrder[RandomPickOrderIdx]);
+
+        }
+        targetIdx = 0;
+      }
+
+      else
+      {
+        if (playerOrder[targetIdx] != "player1")
+        {
+          // selfPick 가야함; playerOrder[RandomPickOrder])
+          autoPickCard(RandomPickOrderIdx, playerVectorSize, playerOrder[RandomPickOrderIdx]);
+
         }
 
-        // 랜덤 선택된 카드 가져오기
-        int cardIndex = rand() % nextPlayerCards.size();
-        string pickedCard = nextPlayerCards[cardIndex];
-
-        // 현재 순서의 플레이어 카드 목록을 참조로 가져옵니다.
-        vector<string>& currentPlayerCards = getPlayerCards(currentPlayer);
-
-        // 현재 플레이어의 카드 목록에 선택된 카드를 추가합니다.
-        currentPlayerCards.push_back(pickedCard);
-
-        // 다음 플레이어의 카드 목록에서 선택된 카드를 제거합니다.
-        nextPlayerCards.erase(nextPlayerCards.begin() + cardIndex);
-        cout << currentPlayer << "가 " << nextPlayer << "의 카드를 뽑았습니다: " << pickedCard << "\n";
-
-        // 중복된 카드를 제거
-        removeDuplicates(currentPlayerCards);
-
-        cout << "뽑은 후 결과 \n" << "Player 1 Cards: ";
-        for (const string& card : getPlayer1Cards()) {
-            cout << card << " ";
-        }
-        cout << endl;
-
-        cout << "Player 2 Cards: ";
-        for (const string& card : getPlayer2Cards()) {
-            cout << card << " ";
-        }
-        cout << endl;
-
-        cout << "Player 3 Cards: ";
-        for (const string& card : getPlayer3Cards()) {
-            cout << card << " ";
-        }
-        cout << endl;
-
-        // 오류 해결방법 : 플레이어 카드가 비어있는걸 인식 못함 
-        // 뽑은 후 1장 남아 있기 = 2장이었는데 pickCard 이후 중복카드 제거 했을 때 
-        showWinner();
+        // 기존에 첫번째 순서거나 마지막 순서였던 경우
+        //targetIdx = RandomPickOrder + 1;
+        targetIdx = 1;
+      }
 
     }
 
-    // pickCard() 기준으로 게임라운드 변수 증가
-    m_gameRound++;
-}
+    // autoPickCard 인 경우 : 1 3 2 순서 player1이 selfPick때 카드수가 없어서 못 뽑으면  Player3이 뽑아야 하는데  selfPick으로 뽑아버림
+    if ((playerVectorSize == 2 && RandomPickOrderIdx == 1 && (playerOrder[targetIdx] != "player1"))
+      || (playerVectorSize == 2 && RandomPickOrderIdx == 1 && (playerOrder[targetIdx] != "player1")))
 
-string OldMaid::determineWinner() {
-    // 우승자를 저장할 변수 초기화
-    string winner = "";
-
-    // 플레이어들의 카드를 확인하여 남은 카드가 없는 플레이어를 찾음
-    for (string& player : playerOrder)
     {
-        vector<string>& playerCards = getPlayerCards(player);
-
-        if (playerCards.empty()) {
-            winner = player;
-            break; // 남은 카드가 없는 플레이어를 찾았으므로 루프 종료
-        }
+      return;
     }
 
-    // 우승자가 없는 경우 "Game is still ongoing." 반환
-    if (winner.empty()) {
-        return "Game is still ongoing.";
+
+    targetPlayer = playerOrder[targetIdx];
+
+    // 내가 뽑을 타겟 카드 수가 없는 경우
+    if (getPlayerCards(playerOrder[targetIdx]).size() == 0)
+    {
+      cout << targetPlayer << "의 카드가 없습니다. 다른 플레이어를 선택합니다.\n";
+      // 픞레이 순서를 담은 벡터에서 요소를 제거
+      playerOrder.erase(playerOrder.begin() + targetIdx);
+      continue;
     }
 
-    // 우승자가 있는 경우 해당 플레이어를 우승자로 선정하여 반환
-    return winner + " is the OldMaid!";
+    break;
+  }
+
+  // 타겟 카드 정의
+  vector <string>& targetCards = getPlayerCards(playerOrder[targetIdx]);
+
+  if (!targetCards.empty())
+  {
+    bool correctInput = false;
+    // 입력 예외 처리
+    while (!correctInput)
+    {
+      int cardNumber;
+      cout << "몇 번째 카드를 선택하겠습니까? ( 1부터 " << targetCards.size() << "까지 ) : ";
+      cin >> cardNumber;
+
+      int cardIndex = cardNumber - 1;
+
+      if (cardIndex < 0 || cardIndex >= targetCards.size())
+      {
+        cout << "입력이 잘못되었습니다. 다시 시도해주세요.\n\n";
+
+      }
+
+      else
+      {
+        targetPlayer = playerOrder[targetIdx];
+        string pickedCard = targetCards[cardIndex];
+
+        // getPlayerCards 매개변수 const 수정
+        getPlayerCards("player1").push_back(pickedCard);
+
+        targetCards.erase(targetCards.begin() + cardIndex);
+
+        cout << "player1님이 " << targetPlayer << "의 " << pickedCard << " 카드를 뽑았습니다.\n\n";
+
+        correctInput = true;
+        break;
+
+      }
+
+    }
+  }
+
+  // 중복된 카드 제거 및 빈 요소 처리
+  //removeDuplicates(getPlayer1Cards());
+  disCard();
+
+  //cout << "뽑은 후 결과 \n";
+ // printPlayerDeck();
+
+  //showZeroCnt();
+
 }
+
+//autoPickCard(RandomPickOrder, playerOrder.size(), playerOrder[RandomPickOrder])
+void OldMaid::autoPickCard(int RandomPickOrderIdx, int playerVectorSize, string& currentPlayer)
+{
+  // Player 2,3이 카드를 뽑을 타겟 인덱스
+  int targetIdx;
+  string targetPlayer;
+
+  // targetIdx 결정 loop
+  while (true)
+  {
+
+    // 타겟 인덱스 정하기 : 플레이어 3명인 경우
+    if (playerVectorSize == 3)
+    {
+      // 내가 마지막 순서이면
+      if (RandomPickOrderIdx == 2)
+      {
+        targetIdx = 0;
+      }
+
+      // 내가 마지막 순서가 아니면
+      else
+      {
+        targetIdx = RandomPickOrderIdx + 1;
+      }
+    }
+
+    // 타겟 인덱스 정하기 : 플레이어 2명인 경우
+    else if (playerVectorSize == 2)
+    {
+
+      if (RandomPickOrderIdx == 1)
+      {
+        if (playerOrder[targetIdx] == "player1")
+        {
+          // selfPick 가야함;
+          selfPickCard(RandomPickOrderIdx, playerVectorSize);
+          break;
+        }
+        targetIdx = 0;
+      }
+
+      else
+      {
+        if (playerOrder[targetIdx] == "player1")
+        {
+          // selfPick 가야함
+          selfPickCard(RandomPickOrderIdx, playerVectorSize);
+          break;
+        }
+        // targetIdx = RandomPickOrder + 1;
+        targetIdx = 1;
+      }
+
+    }
+
+    // selfPickCard 인 경우 : 3 1 2 순서 player3이 autoPick때 카드수가 없어서 못 뽑을떄  Player1이 뽑아야 하는데  autoPick으로 뽑아버림
+    if ((playerVectorSize == 2 && RandomPickOrderIdx == 1 && (playerOrder[targetIdx] == "player1"))
+      || (playerVectorSize == 2 && RandomPickOrderIdx == 1 && (playerOrder[targetIdx] == "player1")))
+
+    {
+      return;
+    }
+
+    targetPlayer = playerOrder[targetIdx];
+
+    if (getPlayerCards(playerOrder[targetIdx]).size() == 0)
+    {
+      cout << targetPlayer << "의 카드가 없습니다. 다른 플레이어를 선택합니다.\n";
+      // 여기 부터
+      playerOrder.erase(playerOrder.begin() + targetIdx);
+      continue;
+    }
+
+    break;
+  }
+
+  // 타겟 카드 정의
+  vector <string>& targetCards = getPlayerCards(playerOrder[targetIdx]);
+
+  // 임의의 카드 선택
+  // CardNum 범위 :  1 ~ targetCards 크기
+  int CardNum = rand() % targetCards.size() + 1;
+  int cardIndex = CardNum - 1;
+
+  targetPlayer = playerOrder[targetIdx];
+  string pickedCard = targetCards[cardIndex];
+
+  // currentPlayer가 선택한 카드를 추가하고, targetCards에서 제거
+  getPlayerCards(currentPlayer).push_back(pickedCard);
+
+  targetCards.erase(targetCards.begin() + cardIndex);
+
+  // 여기 사이 오류 존재
+  cout << currentPlayer << "님이 " << targetPlayer << "의 " << pickedCard << " 카드를 뽑았습니다.\n\n";
+
+  // 중복된 카드 제거
+  disCard();
+
+  //cout << "뽑은 후 결과 \n";
+  //printPlayerDeck();
+
+  //showZeroCnt();
+}
+
+bool OldMaid::isWin()
+{
+  if (getZeroCnt() >= 2)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+
 
 string OldMaid::selectWinner()
 {
-    //m_zeroCnt != 2 -> pickCard() 함수 호출
-    pickCard();
+  vector<pair<int, string>> playerRankings;
 
-    // 만약 m_zeroCnt가 2인 경우 (즉, 카드가 없는 플레이어가 2명 이상인 경우)
-    if (m_zeroCnt == 2)
+  if (player1Cards.empty()) {
+    playerRankings.push_back(make_pair(m_pickNum, "player1"));
+  }
+  if (player2Cards.empty()) {
+    playerRankings.push_back(make_pair(m_pickNum, "player2"));
+  }
+  if (player3Cards.empty()) {
+    playerRankings.push_back(make_pair(m_pickNum, "player3"));
+  }
+
+  // 게임이 종료된 후 남아있는 플레이어들 중 가장 많은 카드를 가진 플레이어를 마지막 순위로 매기기
+  if (!player1Cards.empty()) {
+    playerRankings.push_back(make_pair(m_pickNum, "player1"));
+  }
+  if (!player2Cards.empty()) {
+    playerRankings.push_back(make_pair(m_pickNum, "player2"));
+  }
+  if (!player3Cards.empty()) {
+    playerRankings.push_back(make_pair(m_pickNum, "player3"));
+  }
+
+  // 순위를 출력
+  string result = "게임 종료! 순위는 다음과 같습니다:\n";
+  for (int i = 0; i < playerRankings.size(); ++i) {
+    result += to_string(i + 1) + "등: " + playerRankings[i].second + "\n";
+  }
+  return result;
+}
+
+void OldMaid::play(User& user)
+{
+  Design design;
+  vector<string> myInfo;
+  myInfo.push_back(user.getNickname());
+  myInfo.push_back(user.getGamePoint());
+  //design.printMyInfo(myInfo);
+
+  OldMaidDesign oldMaidDesign;
+  
+  cout << "도둑잡기\n";
+  cout << "게임 시작! \n\n";
+
+  // 2 - 1) 카드 분배
+  cout << "(1) 카드를 분배합니다.\n";
+  dealCard();
+
+  // 3초 딜레이
+  this_thread::sleep_for(chrono::seconds(3));
+  printJkInMyDeck();
+  oldMaidDesign.printCardNum(user.getNickname(), printDeckNum);
+  oldMaidDesign.oldMaidPrintMyCard(player1Cards);
+  //cout << "카드 분배 결과 \n";
+  //printPlayerDeck();
+
+  for (int i = 0; i < player1Cards.size(); i++)
+  {
+    if (player1Cards[i] == "joker")
     {
-        // 승자를 결정하고 반환
-        return determineWinner();
+      oldMaidDesign.printJoker();
+    }
+  }
+
+  // 2 - 2) 중복 카드를 버리기
+  cout << "(2) 중복된 숫자카드를 버립니다.\n";
+  cout << " - 카드를 버려주세요.\n\n";
+  disCard();
+
+  this_thread::sleep_for(chrono::seconds(2));
+
+  // 여기 화면에 초기화 안됨 -> How to?
+  oldMaidDesign.printCardNum(user.getNickname(), printDeckNum);
+  oldMaidDesign.oldMaidPrintMyCard(player1Cards);
+
+  this_thread::sleep_for(chrono::seconds(2));
+
+  //cout << "중복된 카드를 버린 결과는? \n";
+  // printPlayerDeck();
+
+  // 2 - 3) 카드 뽑을 순서 정하기
+ 
+  while (true) {
+
+    system("cls");
+    cout << "도둑잡기\n\n";
+    cout << (getPickNum() / 3) + 1 << "라운드입니다\n\n";
+
+    cout << "(1) 카드 뽑을 순서를 정합니다.\n";
+    this_thread::sleep_for(chrono::seconds(1));
+    for (int i = 0; i < player1Cards.size(); i++)
+    {
+      if (player1Cards[i] == "joker")
+      {
+        oldMaidDesign.printJoker();
+      }
+    }
+    //oldMaidDesign.printCardNum(user.getNickname(), printDeckNum);
+    oldMaidDesign.oldMaidPrintMyCard(player1Cards);
+
+    selectRoutine();
+    oldMaidDesign.printSelectRoutine(playerOrder);
+    cout << " - 순서가 정해졌습니다! \n\n";
+
+    for (int i = 0; i < 3; i++)
+    {
+      // 우승자 선정
+      if (isWin())
+      {
+        cout << "우승자가 선정 되었습니다\n";
+        break;
+      }
+      // Player의 인덱스가 들어감
+      cout << "(" << i + 2 << ") " << i+1 << "번째 플레이어 차례입니다\n";
+      pickCard(i);
+      this_thread::sleep_for(chrono::seconds(3));
     }
 
-    // 게임이 아직 종료되지 않았으므로 빈 문자열 반환
-    return "";
-}
+    if (getZeroCnt() == 2)
+    {
+      break;
+    }
+  } 
 
-void OldMaid::clearScreen()
+  // 3. 결과 공개 
+  system("cls");
+  
+  cout << "도둑잡기\n\n";
+  cout << "결과를 공개합니다\n\n";
+  this_thread::sleep_for(chrono::seconds(3));
+
+  // 게임 종료 후 순위를 출력
+  cout << selectWinner();
+
+  cout << "\n방을 나가는 중입니다....\n";
+  this_thread::sleep_for(chrono::seconds(5));
+
+} 
+
+int OldMaid::getPickNum()
 {
-    system("cls");
+    return m_pickNum;
 }
 
-
-int OldMaid::getGameRound()
-{
-    return m_gameRound;
-}
-
-int OldMaid::getzeroCnt()
+int OldMaid::getZeroCnt()
 {
     return m_zeroCnt;
 }
+
+void OldMaid::printJkInMyDeck()
+{
+  bool jokerFound = false;
+
+  for (int i = 0; i < player1Cards.size(); i++)
+  {
+    if (player1Cards[i] == "joker")
+    {
+
+      jokerFound = true;
+      break;
+    }
+  }
+    
+    if (jokerFound)
+    {
+      cout << " - 조커입니다! 평정심을 유지해주세요!\n\n";
+    }
+
+    else
+    {
+      cout << " - 현재 카드에 조커는 없습니다.\n\n";
+    }
+
+}
+
