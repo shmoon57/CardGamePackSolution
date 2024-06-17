@@ -97,7 +97,8 @@ public:
 private:
 	int m_pickNum = 1;
 	int m_zeroCnt = 0;
-	vector<string> players = { "player1", "player2" , "player3" };
+	vector<string> players;
+	//= { "player1", "player2" , "player3" };
 	vector<string> playerOrder;
 	vector<string> finishedPlayers;
 	vector<string> m_nickNameVector;
