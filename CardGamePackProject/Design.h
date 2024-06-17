@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <Windows.h>
+#include"GameManager.h"
 using namespace std;
 class Design
 {
@@ -28,6 +29,9 @@ class OldMaidDesign : public Design
 public:
 	void printJoker();
 	void printCardNum(string nickname, vector<int>& cardNum);
+	void oldMaidPrintMyCard(vector<string>& myCard);
+	void printSelectRoutine(vector<string>& playerTurnInfo);
+	void getGamePointInfo();
 private:
 	vector<string> getJ();
 	vector<string> getO();
