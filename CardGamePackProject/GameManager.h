@@ -60,21 +60,22 @@ class OldMaid : public GameManager
 {
 
 public:
-
+	OldMaid() { m_gameType = 1; m_gamePrice = 15000; }
 	void play(User& user);
 	void dealCard() override;
 	// 중복 제거 함수
 	void removeDuplicates(vector<string>& playerCards);
 	void disCard();
 	// 게임 시작 전 순서를 정해주는 함수
-	void selectRoutine();
+	void selectRoutine(string nickName);
 	void printSelectRoutine();
 	// 상대방 카드를 얻는 함수 pickCard()위함
 	vector<string>& getPlayerCards(const string& player);
-	void pickCard(int RandomPickOrder);
-	void autoPickCard(int RandomPickOrder, int playerVectorSize, string& currentPlayer);
-	void selfPickCard(int RandomPickOrder, int playerVectorSize);
-	string selectWinner() override;
+	void pickCard(int RandomPickOrder, string nickName);
+	void autoPickCard(int RandomPickOrder, int playerVectorSize, string& currentPlayer, string nickName);
+	void selfPickCard(int RandomPickOrder, int playerVectorSize, string nickName);
+	string selectWinner() override { return ""; };
+	string selectOldMaidWinner(string nickName);
 	int getPickNum();
 	void showZeroCnt();
 	void printPlayerDeck();
@@ -99,5 +100,6 @@ private:
 	vector<string> players = { "player1", "player2" , "player3" };
 	vector<string> playerOrder;
 	vector<string> finishedPlayers;
+	vector<string> m_nickNameVector;
 
 };

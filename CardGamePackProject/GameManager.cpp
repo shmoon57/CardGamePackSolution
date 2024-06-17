@@ -12,9 +12,6 @@
 
 #define USERNUM 3
 
-
-
-
 struct Card {
     char suit;  // 's', 'd', 'h', 'c'
     int value;  // 2-10, 11 (J), 12 (Q), 13 (K), 14 (A)
@@ -702,6 +699,8 @@ void OldMaid::printPlayerDeck()
 
 void OldMaid::removeDuplicates(vector<string>& playerCards)
 {
+    if (playerCards.empty()) { return; }
+
     for (int i = 0; i < playerCards.size(); i++)
     {
         for (int j = i + 1; j < playerCards.size(); j++)
@@ -729,7 +728,7 @@ void OldMaid::disCard()
     printDeckNum = { (int)player1Cards.size(), (int)player2Cards.size(), (int)player3Cards.size() };
 }
 
-void OldMaid::selectRoutine()
+void OldMaid::selectRoutine(string nickName)
 {
     // 현재 시간을 시드로 사용하여 무작위성을 증가
     srand(time(0));
@@ -739,6 +738,23 @@ void OldMaid::selectRoutine()
 
     // playerOrder 벡터를 무작위로 섞기
     random_shuffle(playerOrder.begin(), playerOrder.end());
+    for (string player_seq : playerOrder)
+    {
+        if (player_seq == "player1")
+        {
+            m_nickNameVector.push_back(nickName);
+        }
+
+        if (player_seq == "player2")
+        {
+            m_nickNameVector.push_back("Hong Jin Ho");
+        }
+
+        if (player_seq == "player3")
+        {
+            m_nickNameVector.push_back("Jang Dong Min");
+        }
+    }
 }
 
 void OldMaid::printSelectRoutine()
@@ -786,7 +802,7 @@ void OldMaid::showZeroCnt()
 3. 플레이어 카드 수 확인하며 카드 수 0이면 ++
 */
 
-void OldMaid::pickCard(int RandomPickOrderIdx)
+void OldMaid::pickCard(int RandomPickOrderIdx, string nickName)
 {
   m_pickNum++;
 
@@ -809,18 +825,18 @@ void OldMaid::pickCard(int RandomPickOrderIdx)
 
   if (sizeofPlayerCard == 0)
   {
-    cout << "player의 카드 개수는 0 입니다. 다음 player가 카드를 뽑습니다.\n";
+    cout << m_nickNameVector[RandomPickOrderIdx] << "님의 카드 개수는 0 입니다.다음 플레이어가 카드를 뽑습니다.\n\n";
   }
 
   else
   {
     if (playerOrder[RandomPickOrderIdx] == "player1")
     {
-      selfPickCard(RandomPickOrderIdx, playerOrder.size());
+      selfPickCard(RandomPickOrderIdx, playerOrder.size(), nickName);
     }
     else
     {
-      autoPickCard(RandomPickOrderIdx, playerOrder.size(), playerOrder[RandomPickOrderIdx]);
+      autoPickCard(RandomPickOrderIdx, playerOrder.size(), playerOrder[RandomPickOrderIdx], nickName);
     }
 
   }
@@ -843,62 +859,61 @@ void OldMaid::pickCard(int RandomPickOrderIdx)
 
 }
 //selfPickCard(RandomPickOrder, playerOrder.size())
-void OldMaid::selfPickCard(int RandomPickOrderIdx, int playerVectorSize)
+void OldMaid::selfPickCard(int RandomPickOrderIdx, int playerVectorSize, string nickName)
 {
-  // player1이 카드를 뽑을 타겟 인덱스
-  int targetIdx;
-  string targetPlayer;
+    int targetIdx = -1;
+    string targetPlayer;
 
-  // targetIdx 결정 loop
-  while (true)
-  {
-    // 타겟 인덱스 정하기 : 플레이어 3명인 경우
-    if (playerVectorSize == 3)
-    {
-      // 내가 마지막 순서이면
-      if (RandomPickOrderIdx == 2)
-      {
-        targetIdx = 0;
-      }
-
-      // 내가 마지막 순서가 아니면
-      else
-      {
-        targetIdx = RandomPickOrderIdx + 1;
-      }
-    }
-
-    // 타겟 인덱스 정하기 : 플레이어 2명인 경우
-    else if (playerVectorSize == 2)
+    // targetIdx 결정 loop
+    while (true)
     {
 
-      // 기존에 두번째 순서였던 경우
-      if (RandomPickOrderIdx == 1)
-      {
-        if (playerOrder[targetIdx] != "player1")
+        // 타겟 인덱스 정하기 : 플레이어 3명인 경우
+        if (playerVectorSize == 3)
         {
-          // autoPick 가야함; playerOrder[RandomPickOrder])
-          autoPickCard(RandomPickOrderIdx, playerVectorSize, playerOrder[RandomPickOrderIdx]);
+            // 내가 마지막 순서이면
+            if (RandomPickOrderIdx == 2)
+            {
+                targetIdx = 0;
+            }
 
-        }
-        targetIdx = 0;
-      }
-
-      else
-      {
-        if (playerOrder[targetIdx] != "player1")
-        {
-          // selfPick 가야함; playerOrder[RandomPickOrder])
-          autoPickCard(RandomPickOrderIdx, playerVectorSize, playerOrder[RandomPickOrderIdx]);
-
+            // 내가 마지막 순서가 아니면
+            else
+            {
+                targetIdx = RandomPickOrderIdx + 1;
+            }
         }
 
-        // 기존에 첫번째 순서거나 마지막 순서였던 경우
-        //targetIdx = RandomPickOrder + 1;
-        targetIdx = 1;
-      }
+        // 타겟 인덱스 정하기 : 플레이어 2명인 경우
+        else if (playerVectorSize == 2)
+        {
+            // 내가 마지막 순서이면
+            if (RandomPickOrderIdx == 1)
+            {
+                targetIdx = 0;
+            }
 
-    }
+            // 내가 마지막 순서가 아니면
+            else
+            {
+                targetIdx = 1;
+            }
+
+            if (playerOrder[targetIdx] == "player1")
+            {
+                // user가 target이면 자동으로 뽑기
+                autoPickCard(RandomPickOrderIdx, playerVectorSize, playerOrder[RandomPickOrderIdx], nickName);
+                break;
+            }
+
+            else
+            {
+                // user가 target이 아니면 셀프로 뽑기
+                selfPickCard(RandomPickOrderIdx, playerVectorSize, nickName);
+                break;
+            }
+
+        }
 
     // autoPickCard 인 경우 : 1 3 2 순서 player1이 selfPick때 카드수가 없어서 못 뽑으면  Player3이 뽑아야 하는데  selfPick으로 뽑아버림
     if ((playerVectorSize == 2 && RandomPickOrderIdx == 1 && (playerOrder[targetIdx] != "player1"))
@@ -908,20 +923,19 @@ void OldMaid::selfPickCard(int RandomPickOrderIdx, int playerVectorSize)
       return;
     }
 
-
     targetPlayer = playerOrder[targetIdx];
 
-    // 내가 뽑을 타겟 카드 수가 없는 경우
-    if (getPlayerCards(playerOrder[targetIdx]).size() == 0)
-    {
-      cout << targetPlayer << "의 카드가 없습니다. 다른 플레이어를 선택합니다.\n";
-      // 픞레이 순서를 담은 벡터에서 요소를 제거
-      playerOrder.erase(playerOrder.begin() + targetIdx);
-      continue;
-    }
+        // 내가 뽑을 타겟 카드 수가 없는 경우
+        if (getPlayerCards(playerOrder[targetIdx]).size() == 0)
+        {
+          cout << m_nickNameVector[targetIdx] << "의 카드가 없습니다. 다른 플레이어를 선택합니다.\n";
+          // 픞레이 순서를 담은 벡터에서 요소를 제거
+          playerOrder.erase(playerOrder.begin() + targetIdx);
+          continue;
+        }
 
-    break;
-  }
+        break;
+    }
 
   // 타겟 카드 정의
   vector <string>& targetCards = getPlayerCards(playerOrder[targetIdx]);
@@ -940,8 +954,7 @@ void OldMaid::selfPickCard(int RandomPickOrderIdx, int playerVectorSize)
 
       if (cardIndex < 0 || cardIndex >= targetCards.size())
       {
-        cout << "입력이 잘못되었습니다. 다시 시도해주세요.\n\n";
-
+          cout << "입력이 잘못되었습니다. 다시 시도해주세요.\n\n";
       }
 
       else
@@ -954,13 +967,30 @@ void OldMaid::selfPickCard(int RandomPickOrderIdx, int playerVectorSize)
 
         targetCards.erase(targetCards.begin() + cardIndex);
 
-        cout << "player1님이 " << targetPlayer << "의 " << pickedCard << " 카드를 뽑았습니다.\n\n";
+        string h = "♥";
+        string s = "♠";
+        string c = "♣";
+        string d = "◆";
+
+        if (pickedCard[0] == 'h') { pickedCard[0] = h[0]; pickedCard.insert(1, h, 1, h.length() - 1); }
+        if (pickedCard[0] == 's') { pickedCard[0] = s[0]; pickedCard.insert(1, s, 1, s.length() - 1); }
+        if (pickedCard[0] == 'c') { pickedCard[0] = c[0]; pickedCard.insert(1, c, 1, c.length() - 1); }
+        if (pickedCard[0] == 'd') { pickedCard[0] = d[0]; pickedCard.insert(1, d, 1, d.length() - 1); }
+
+        if (m_nickNameVector[RandomPickOrderIdx] == nickName)
+        {
+            cout << m_nickNameVector[RandomPickOrderIdx] << "님이" << m_nickNameVector[targetIdx] << "의 " << pickedCard << " 카드를 뽑았습니다.\n\n";
+        }
+        
+        else
+        {
+            cout << m_nickNameVector[RandomPickOrderIdx] << "님이" << m_nickNameVector[targetIdx] << "의 ?? 카드를 뽑았습니다.\n\n";
+        }
 
         correctInput = true;
         break;
 
       }
-
     }
   }
 
@@ -976,10 +1006,10 @@ void OldMaid::selfPickCard(int RandomPickOrderIdx, int playerVectorSize)
 }
 
 //autoPickCard(RandomPickOrder, playerOrder.size(), playerOrder[RandomPickOrder])
-void OldMaid::autoPickCard(int RandomPickOrderIdx, int playerVectorSize, string& currentPlayer)
+void OldMaid::autoPickCard(int RandomPickOrderIdx, int playerVectorSize, string& currentPlayer, string nickName)
 {
   // Player 2,3이 카드를 뽑을 타겟 인덱스
-  int targetIdx;
+  int targetIdx = -1;
   string targetPlayer;
 
   // targetIdx 결정 loop
@@ -1005,45 +1035,49 @@ void OldMaid::autoPickCard(int RandomPickOrderIdx, int playerVectorSize, string&
     // 타겟 인덱스 정하기 : 플레이어 2명인 경우
     else if (playerVectorSize == 2)
     {
+        // 내가 마지막 순서이면
+        if (RandomPickOrderIdx == 1)
+        {
+            targetIdx = 0;
+        }
 
-      if (RandomPickOrderIdx == 1)
-      {
+        // 내가 마지막 순서가 아니면
+        else
+        {
+            targetIdx = 1;
+        }
+
         if (playerOrder[targetIdx] == "player1")
         {
-          // selfPick 가야함;
-          selfPickCard(RandomPickOrderIdx, playerVectorSize);
-          break;
+            // user가 target이면 자동으로 뽑기
+            autoPickCard(RandomPickOrderIdx, playerVectorSize, playerOrder[RandomPickOrderIdx], nickName);
+            break;
         }
-        targetIdx = 0;
-      }
 
-      else
-      {
-        if (playerOrder[targetIdx] == "player1")
+        else
         {
-          // selfPick 가야함
-          selfPickCard(RandomPickOrderIdx, playerVectorSize);
-          break;
+            // user가 target이 아니면 셀프로 뽑기
+            selfPickCard(RandomPickOrderIdx, playerVectorSize, nickName);
+            break;
         }
-        // targetIdx = RandomPickOrder + 1;
-        targetIdx = 1;
-      }
 
     }
 
+    /*
     // selfPickCard 인 경우 : 3 1 2 순서 player3이 autoPick때 카드수가 없어서 못 뽑을떄  Player1이 뽑아야 하는데  autoPick으로 뽑아버림
-    if ((playerVectorSize == 2 && RandomPickOrderIdx == 1 && (playerOrder[targetIdx] == "player1"))
+    if ((playerVectorSize == 2 && playerOrder[RandomPickOrderIdx] == "player1" && (playerOrder[targetIdx] == "player1"))
       || (playerVectorSize == 2 && RandomPickOrderIdx == 1 && (playerOrder[targetIdx] == "player1")))
 
     {
       return;
     }
+    */
 
     targetPlayer = playerOrder[targetIdx];
 
     if (getPlayerCards(playerOrder[targetIdx]).size() == 0)
     {
-      cout << targetPlayer << "의 카드가 없습니다. 다른 플레이어를 선택합니다.\n";
+      cout << m_nickNameVector[targetIdx] << "의 카드가 없습니다. 다른 플레이어를 선택합니다.\n";
       // 여기 부터
       playerOrder.erase(playerOrder.begin() + targetIdx);
       continue;
@@ -1068,9 +1102,8 @@ void OldMaid::autoPickCard(int RandomPickOrderIdx, int playerVectorSize, string&
 
   targetCards.erase(targetCards.begin() + cardIndex);
 
-  // 여기 사이 오류 존재
-  cout << currentPlayer << "님이 " << targetPlayer << "의 " << pickedCard << " 카드를 뽑았습니다.\n\n";
-
+  cout << m_nickNameVector[RandomPickOrderIdx] << "님이 " << m_nickNameVector[targetIdx] << "의 ?? 카드를 뽑았습니다.\n\n";
+  
   // 중복된 카드 제거
   disCard();
 
@@ -1094,37 +1127,38 @@ bool OldMaid::isWin()
 
 
 
-string OldMaid::selectWinner()
+string OldMaid::selectOldMaidWinner(string nickName)
 {
   vector<pair<int, string>> playerRankings;
 
   if (player1Cards.empty()) {
-    playerRankings.push_back(make_pair(m_pickNum, "player1"));
+    playerRankings.push_back(make_pair(m_pickNum, nickName));
   }
   if (player2Cards.empty()) {
-    playerRankings.push_back(make_pair(m_pickNum, "player2"));
+    playerRankings.push_back(make_pair(m_pickNum, "Hong Jin Ho")); 
   }
   if (player3Cards.empty()) {
-    playerRankings.push_back(make_pair(m_pickNum, "player3"));
+    playerRankings.push_back(make_pair(m_pickNum, "Jang Dong Min"));
   }
 
   // 게임이 종료된 후 남아있는 플레이어들 중 가장 많은 카드를 가진 플레이어를 마지막 순위로 매기기
   if (!player1Cards.empty()) {
-    playerRankings.push_back(make_pair(m_pickNum, "player1"));
+    playerRankings.push_back(make_pair(m_pickNum, nickName));
   }
   if (!player2Cards.empty()) {
-    playerRankings.push_back(make_pair(m_pickNum, "player2"));
+    playerRankings.push_back(make_pair(m_pickNum, "Hong Jin Ho"));
   }
   if (!player3Cards.empty()) {
-    playerRankings.push_back(make_pair(m_pickNum, "player3"));
+    playerRankings.push_back(make_pair(m_pickNum, "Jang Dong Min"));
   }
 
   // 순위를 출력
   string result = "게임 종료! 순위는 다음과 같습니다:\n";
   for (int i = 0; i < playerRankings.size(); ++i) {
-    result += to_string(i + 1) + "등: " + playerRankings[i].second + "\n";
+    result += to_string(i + 1) + "등: " + playerRankings[i].second + "님\n";
   }
-  return result;
+  cout << result;
+  return playerRankings[0].second;
 }
 
 void OldMaid::play(User& user)
@@ -1147,7 +1181,7 @@ void OldMaid::play(User& user)
   // 3초 딜레이
   this_thread::sleep_for(chrono::seconds(3));
   printJkInMyDeck();
-  oldMaidDesign.printCardNum(user.getNickname(), printDeckNum);
+  oldMaidDesign.printCardNum(user.getNickname(), printDeckNum, m_nickNameVector);
   oldMaidDesign.oldMaidPrintMyCard(player1Cards);
   //cout << "카드 분배 결과 \n";
   //printPlayerDeck();
@@ -1168,7 +1202,7 @@ void OldMaid::play(User& user)
   this_thread::sleep_for(chrono::seconds(2));
 
   // 여기 화면에 초기화 안됨 -> How to?
-  oldMaidDesign.printCardNum(user.getNickname(), printDeckNum);
+  // oldMaidDesign.printCardNum(user.getNickname(), printDeckNum);
   oldMaidDesign.oldMaidPrintMyCard(player1Cards);
 
   this_thread::sleep_for(chrono::seconds(2));
@@ -1177,15 +1211,18 @@ void OldMaid::play(User& user)
   // printPlayerDeck();
 
   // 2 - 3) 카드 뽑을 순서 정하기
- 
+  cout << "카드 뽑을 순서를 정합니다.\n\n";
+  this_thread::sleep_for(chrono::seconds(1));
+  selectRoutine(user.getNickname());
+  cout << " - 순서가 정해졌습니다! \n\n";
+
   while (true) {
 
     system("cls");
     cout << "도둑잡기\n\n";
     cout << (getPickNum() / 3) + 1 << "라운드입니다\n\n";
 
-    cout << "(1) 카드 뽑을 순서를 정합니다.\n";
-    this_thread::sleep_for(chrono::seconds(1));
+    
     for (int i = 0; i < player1Cards.size(); i++)
     {
       if (player1Cards[i] == "joker")
@@ -1193,12 +1230,10 @@ void OldMaid::play(User& user)
         oldMaidDesign.printJoker();
       }
     }
-    //oldMaidDesign.printCardNum(user.getNickname(), printDeckNum);
+    oldMaidDesign.printCardNum(user.getNickname(), printDeckNum, m_nickNameVector);
     oldMaidDesign.oldMaidPrintMyCard(player1Cards);
+    oldMaidDesign.printSelectRoutine(playerOrder, m_nickNameVector);
 
-    selectRoutine();
-    oldMaidDesign.printSelectRoutine(playerOrder);
-    cout << " - 순서가 정해졌습니다! \n\n";
 
     for (int i = 0; i < 3; i++)
     {
@@ -1209,8 +1244,8 @@ void OldMaid::play(User& user)
         break;
       }
       // Player의 인덱스가 들어감
-      cout << "(" << i + 2 << ") " << i+1 << "번째 플레이어 차례입니다\n";
-      pickCard(i);
+      cout << "(" << i + 1 << ") " << m_nickNameVector[i] << "님의 차례입니다\n";
+      pickCard(i, user.getNickname());
       this_thread::sleep_for(chrono::seconds(3));
     }
 
@@ -1228,11 +1263,22 @@ void OldMaid::play(User& user)
   this_thread::sleep_for(chrono::seconds(3));
 
   // 게임 종료 후 순위를 출력
-  cout << selectWinner();
+  string result = selectOldMaidWinner(user.getNickname());
+
+  if (result == user.getNickname())
+  {
+      user.setGamePoint(to_string(stoi(user.getGamePoint()) + m_gamePrice));
+      cout << "축하합니다! " << m_gamePrice << "만큼의 포인트를 획득했습니다!" << endl;
+  }
+  
+  else
+  {
+      user.setGamePoint(to_string(stoi(user.getGamePoint()) - m_gamePrice/3));
+      cout << "아쉽지만, 승리하지 못했습니다" << m_gamePrice / 3 << "만큼의 포인트를 잃었습니다." << endl;
+  }
 
   cout << "\n방을 나가는 중입니다....\n";
   this_thread::sleep_for(chrono::seconds(5));
-
 } 
 
 int OldMaid::getPickNum()

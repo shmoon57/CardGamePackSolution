@@ -139,7 +139,7 @@ void UserDataManager::signUp() //회원가입
 	user.push_back(ID);
 	user.push_back(password);
 	user.push_back(nickname);
-	user.push_back("1000000"); // 회원가입시 기본 제공 포인트
+	user.push_back("5000000"); // 회원가입시 기본 제공 포인트
 	writeUser(user);
 
 	cout << "회원가입이 완료되었습니다. \n";
